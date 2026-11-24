@@ -1,0 +1,1499 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo_busqueda }} | Ferreterías VI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gta-pink: #f152a4;
+            --gta-orange: #f58426;
+            --gta-purple: #2a114b;
+            --gta-teal: #49c4c4;
+            --bg-dark: #0a0a0c;
+        }
+
+        body {
+            background-color: #0a0a0c;
+            color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Imagen principal de fondo difuminada (borrosa) en todos los HTML */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -25px;
+            background: url("{% static 'images/hero_gta.jpg' %}") no-repeat center center / cover;
+            filter: blur(20px) brightness(0.42) saturate(1.3);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 14, 0.48) 0%,
+                rgba(20, 13, 34, 0.72) 50%,
+                rgba(28, 12, 48, 0.85) 100%
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ----- Header / Navbar Superior Estilo Mercado Libre + GTA VI ----- */
+        .navbar-gta {
+            background: rgba(10, 10, 16, 0.94) !important;
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border-bottom: 1px solid rgba(241, 82, 164, 0.28);
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.7);
+            padding-top: 0.45rem;
+            padding-bottom: 0.35rem;
+            z-index: 1050;
+        }
+
+        .navbar-gta .container {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: stretch !important;
+        }
+
+        .navbar-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .navbar-brand {
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+        }
+
+        .nav-logo-gta {
+            height: 46px;
+            max-height: 46px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            filter: drop-shadow(0 0 10px rgba(241, 82, 164, 0.45));
+            transition: transform 0.25s ease;
+            display: block;
+        }
+
+        .nav-logo-gta:hover {
+            transform: scale(1.04);
+        }
+
+        @media (max-width: 576px) {
+            .nav-logo-gta {
+                height: 36px;
+                max-height: 36px;
+            }
+        }
+
+        /* Barra Buscadora Superior Estilo Mercado Libre */
+        .ml-search-form {
+            flex: 1 1 auto;
+            max-width: 580px;
+            min-width: 0;
+            margin: 0 4px;
+        }
+
+        .ml-search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(20, 14, 34, 0.95);
+            border: 1.5px solid rgba(241, 82, 164, 0.45);
+            border-radius: 9px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+            transition: all 0.25s ease;
+            width: 100%;
+        }
+
+        .ml-search-box:focus-within {
+            border-color: var(--gta-teal);
+            box-shadow: 0 4px 22px rgba(0, 0, 0, 0.7), 0 0 18px rgba(73, 196, 196, 0.35);
+        }
+
+        .ml-search-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            padding: 7px 12px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            width: 100%;
+            min-width: 60px;
+            outline: none;
+            flex: 1 1 auto;
+        }
+
+        .ml-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 500;
+        }
+
+        .ml-search-scope {
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 0 8px;
+            height: 35px;
+            outline: none;
+            cursor: pointer;
+            max-width: 125px;
+            flex-shrink: 0;
+        }
+
+        .ml-search-scope option {
+            background: #140e20;
+            color: #ffffff;
+        }
+
+        .ml-search-btn {
+            background: transparent;
+            border: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--gta-pink);
+            padding: 6px 10px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .ml-search-btn:hover {
+            background: rgba(241, 82, 164, 0.2);
+            color: #ffffff;
+        }
+
+        /* Botón de las 3 líneas (Menú Desplegable Minimizado) */
+        .btn-hamburger-gta {
+            position: relative;
+            background: linear-gradient(145deg, rgba(36, 22, 58, 0.95), rgba(18, 12, 32, 0.98));
+            border: 1.5px solid rgba(241, 82, 164, 0.55);
+            color: #ffffff;
+            border-radius: 9px;
+            padding: 6px 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 12px rgba(241, 82, 164, 0.2);
+            transition: all 0.25s ease;
+        }
+
+        .btn-hamburger-gta:hover,
+        .btn-hamburger-gta[aria-expanded="true"] {
+            border-color: var(--gta-teal);
+            background: linear-gradient(145deg, rgba(241, 82, 164, 0.28), rgba(42, 17, 75, 0.95));
+            box-shadow: 0 6px 20px rgba(73, 196, 196, 0.3);
+            color: #ffffff;
+        }
+
+        .btn-hamburger-gta .hamburger-lines-icon {
+            font-size: 1.35rem;
+            line-height: 1;
+            color: var(--gta-pink);
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+
+        .btn-hamburger-gta[aria-expanded="true"] .hamburger-lines-icon {
+            color: var(--gta-teal);
+            transform: rotate(90deg);
+        }
+
+        /* Panel Desplegable */
+        #gtaNavMenuPanel {
+            display: none !important;
+            transition: all 0.28s ease;
+        }
+
+        #gtaNavMenuPanel.show,
+        #gtaNavMenuPanel.is-open {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .gta-collapse-panel {
+            margin-top: 8px;
+            background: linear-gradient(165deg, rgba(22, 14, 38, 0.98) 0%, rgba(10, 8, 18, 0.99) 100%);
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            border-radius: 16px;
+            padding: 16px 18px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(241, 82, 164, 0.2);
+        }
+
+        .gta-menu-section-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .gta-menu-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+        }
+
+        .gta-menu-item-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 11px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.22s ease;
+            width: 100%;
+        }
+
+        .gta-menu-item-btn:hover {
+            background: rgba(241, 82, 164, 0.18);
+            border-color: var(--gta-pink);
+            transform: translateY(-2px);
+        }
+
+        .gta-menu-item-btn.item-cart {
+            background: linear-gradient(135deg, rgba(241, 82, 164, 0.25) 0%, rgba(245, 132, 38, 0.25) 100%);
+            border-color: rgba(241, 82, 164, 0.55);
+        }
+
+        .gta-menu-item-btn.item-cart:hover {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+        }
+
+        .gta-menu-item-btn.item-history {
+            background: rgba(245, 132, 38, 0.12);
+            border-color: rgba(245, 132, 38, 0.4);
+        }
+
+        .gta-menu-item-btn.item-admin {
+            background: rgba(73, 196, 196, 0.12);
+            border-color: rgba(73, 196, 196, 0.4);
+        }
+
+        .gta-menu-item-btn.item-logout {
+            background: rgba(255, 75, 75, 0.12);
+            border-color: rgba(255, 75, 75, 0.35);
+            color: #ffb3b3 !important;
+        }
+
+        .gta-menu-item-btn.item-logout:hover {
+            background: #ff4b4b;
+            color: #ffffff !important;
+        }
+
+        @media (max-width: 576px) {
+            .navbar-top-row {
+                gap: 6px;
+            }
+            .navbar-brand {
+                font-size: 1.02rem !important;
+                letter-spacing: 1px;
+            }
+            .btn-hamburger-gta {
+                padding: 5px 8px;
+                font-size: 0.72rem;
+            }
+            .btn-hamburger-gta .hamburger-lines-icon {
+                font-size: 1.25rem;
+            }
+            .ml-search-input {
+                font-size: 0.8rem;
+                padding: 5px 8px;
+            }
+            .ml-search-btn {
+                padding: 5px 8px;
+            }
+        }
+
+        .ml-search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(24, 16, 38, 0.95);
+            border: 1.5px solid rgba(241, 82, 164, 0.48);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5), 0 0 15px rgba(241, 82, 164, 0.15);
+            transition: all 0.25s ease;
+        }
+
+        .ml-search-box:focus-within {
+            border-color: var(--gta-teal);
+            box-shadow: 0 4px 22px rgba(0, 0, 0, 0.7), 0 0 20px rgba(73, 196, 196, 0.4);
+        }
+
+        .ml-search-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            padding: 10px 16px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            width: 100%;
+            outline: none;
+        }
+
+        .ml-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 500;
+        }
+
+        .ml-search-scope {
+            background: transparent;
+            border: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.14);
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0 12px;
+            height: 38px;
+            outline: none;
+            cursor: pointer;
+            max-width: 165px;
+        }
+
+        .ml-search-scope option {
+            background: #140e20;
+            color: #ffffff;
+        }
+
+        .ml-search-btn {
+            background: transparent;
+            border: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.14);
+            color: var(--gta-pink);
+            padding: 8px 15px;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .ml-search-btn:hover {
+            background: rgba(241, 82, 164, 0.2);
+            color: #ffffff;
+        }
+
+        /* Sub-barra de enlaces rápidos en el Header */
+        .header-subnav {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 6px;
+            margin-top: 6px;
+            font-size: 0.78rem;
+        }
+
+        .header-subnav-link {
+            color: rgba(255, 255, 255, 0.72);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .header-subnav-link:hover, .header-subnav-link.active {
+            color: #ffffff;
+            background: rgba(241, 82, 164, 0.2);
+        }
+
+        /* Botones de Usuario y Carrito */
+        .user-badge-gta {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            border-radius: 50px;
+            padding: 5px 14px 5px 8px;
+            font-size: 0.8rem;
+            color: #ffffff !important;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .user-badge-gta:hover {
+            background: rgba(241, 82, 164, 0.25);
+            border-color: var(--gta-pink);
+        }
+
+        .nav-avatar-img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--gta-teal);
+        }
+
+        .admin-tag-mini {
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .btn-nav-admin {
+            background: rgba(73, 196, 196, 0.12);
+            border: 1px solid rgba(73, 196, 196, 0.4);
+            color: #e0fafa !important;
+            border-radius: 50px;
+            padding: 6px 13px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-nav-admin:hover {
+            background: rgba(73, 196, 196, 0.25);
+            border-color: var(--gta-teal);
+        }
+
+        .btn-nav-cart {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            border-radius: 50px;
+            padding: 6px 16px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 16px rgba(241, 82, 164, 0.4);
+        }
+
+        .cart-badge-count {
+            background: #0a0a0c;
+            color: var(--gta-teal);
+            border: 1px solid rgba(73, 196, 196, 0.6);
+            font-size: 0.68rem;
+            font-weight: 900;
+            padding: 1px 6px;
+            border-radius: 50px;
+        }
+
+        @keyframes cartBadgePop {
+            0% { transform: scale(1); }
+            45% { transform: scale(1.45); background: var(--gta-teal); color: #08060e; }
+            100% { transform: scale(1); }
+        }
+
+        .cart-badge-pop {
+            animation: cartBadgePop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* ----- Búsquedas Relacionadas Superior (como Imagen 2) ----- */
+        .related-searches-bar {
+            background: rgba(14, 10, 24, 0.78);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 0;
+            font-size: 0.78rem;
+        }
+
+        .related-searches-bar a {
+            color: rgba(255, 255, 255, 0.72);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .related-searches-bar a:hover {
+            color: var(--gta-teal);
+            text-decoration: underline;
+        }
+
+        /* ----- Layout Principal de Resultados (Sidebar Izquierdo + Grid Derecho) ----- */
+        .results-wrapper {
+            padding-top: 125px;
+            padding-bottom: 60px;
+            flex: 1;
+        }
+
+        /* Sidebar Izquierdo de Filtros (Estilo Imagen 2) */
+        .sidebar-breadcrumb {
+            font-size: 0.76rem;
+            color: rgba(255, 255, 255, 0.55);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-search-title {
+            font-size: 1.65rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+
+        .sidebar-results-count {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 14px;
+        }
+
+        .active-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(241, 82, 164, 0.18);
+            border: 1px solid rgba(241, 82, 164, 0.45);
+            color: #ffffff;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin: 0 6px 8px 0;
+            transition: all 0.2s ease;
+        }
+
+        .active-filter-tag:hover {
+            background: #ff4b4b;
+            border-color: #ff4b4b;
+            color: #ffffff;
+        }
+
+        /* Tarjetas Switch de Filtro (Estilo "FULL te da envío gratis" / "Envío local" de Imagen 2) */
+        .filter-switch-card {
+            background: linear-gradient(160deg, rgba(28, 18, 44, 0.86) 0%, rgba(14, 10, 24, 0.92) 100%);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 13px 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.25s ease;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+        }
+
+        .filter-switch-card:hover {
+            border-color: var(--gta-pink);
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+
+        .filter-switch-card.active-switch {
+            border-color: var(--gta-teal);
+            background: linear-gradient(160deg, rgba(73, 196, 196, 0.16) 0%, rgba(18, 14, 32, 0.94) 100%);
+            box-shadow: 0 0 18px rgba(73, 196, 196, 0.25);
+        }
+
+        .switch-pill-ui {
+            width: 40px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 50px;
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+
+        .switch-pill-ui::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            transition: all 0.25s ease;
+        }
+
+        .filter-switch-card.active-switch .switch-pill-ui {
+            background: var(--gta-teal);
+        }
+
+        .filter-switch-card.active-switch .switch-pill-ui::after {
+            left: 21px;
+            background: #0a0a0c;
+        }
+
+        /* Lista de Categorías en Sidebar Izquierdo */
+        .sidebar-section-title {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 20px 0 10px 0;
+            letter-spacing: 0.4px;
+        }
+
+        .sidebar-cat-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-cat-list li {
+            margin-bottom: 6px;
+        }
+
+        .sidebar-cat-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.72);
+            text-decoration: none;
+            font-size: 0.84rem;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-cat-link:hover {
+            color: #ffffff;
+            background: rgba(241, 82, 164, 0.15);
+        }
+
+        .sidebar-cat-link.active {
+            color: var(--gta-teal);
+            font-weight: 800;
+            background: rgba(73, 196, 196, 0.14);
+            border-left: 3px solid var(--gta-teal);
+        }
+
+        /* ----- Banner Destacado Superior Derecho (como el banner amarillo de Imagen 2) ----- */
+        .store-promo-banner {
+            background: linear-gradient(125deg, #2a114b 0%, #8e2467 45%, #f152a4 80%, #f58426 100%);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.55), 0 0 28px rgba(241, 82, 164, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .store-logo-circle {
+            width: 78px;
+            height: 78px;
+            border-radius: 50%;
+            background: #0d0918;
+            border: 2.5px solid var(--gta-teal);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .promo-tool-pill {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+        }
+
+        /* ----- Banner de Ofertas Flash con Contador Regresivo ----- */
+        .flash-sale-banner {
+            background: linear-gradient(135deg, rgba(42, 17, 75, 0.95) 0%, rgba(241, 82, 164, 0.3) 50%, rgba(245, 132, 38, 0.3) 100%);
+            border: 1.5px solid rgba(241, 82, 164, 0.5);
+            border-radius: 16px;
+            padding: 16px 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 8px 30px rgba(241, 82, 164, 0.22), 0 4px 18px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .flash-sale-timer {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: monospace;
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .flash-digit-box {
+            background: rgba(10, 10, 16, 0.85);
+            border: 1px solid var(--gta-teal);
+            border-radius: 8px;
+            padding: 4px 10px;
+            color: var(--gta-teal);
+            box-shadow: 0 0 12px rgba(73, 196, 196, 0.3);
+            min-width: 42px;
+            text-align: center;
+        }
+
+        /* Selector "Ordenar por" arriba a la derecha */
+        .sort-bar-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            font-size: 0.84rem;
+        }
+
+        .sort-select-gta {
+            background: rgba(24, 16, 38, 0.9);
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* ----- Tarjetas de Productos ----- */
+        .card-gta {
+            background: #140e20;
+            border: 1px solid rgba(241, 82, 164, 0.24);
+            border-radius: 18px;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .card-gta:hover {
+            transform: translateY(-7px);
+            border-color: rgba(241, 82, 164, 0.65);
+            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.75), 0 0 24px rgba(241, 82, 164, 0.3);
+        }
+
+        .product-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 42%, #ffffff 0%, #ffffff 52%, #f8edf8 75%, #d8b4e2 100%);
+            padding: 20px 16px 32px 16px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 210px;
+        }
+
+        .product-img-wrapper::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(20, 14, 32, 0.1) 0%, transparent 30%, transparent 58%, rgba(20, 14, 32, 0.45) 80%, rgba(20, 14, 32, 0.88) 93%, #140e20 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .product-img {
+            height: 145px;
+            max-width: 88%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+            transition: transform 0.45s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-gta:hover .product-img {
+            transform: scale(1.1);
+        }
+
+        .product-img-wrapper.no-image-bg {
+            background: radial-gradient(circle at 50% 45%, rgba(241, 82, 164, 0.25) 0%, rgba(42, 17, 75, 0.45) 55%, #140e20 100%);
+        }
+
+        .badge-categoria {
+            background: rgba(241, 82, 164, 0.16);
+            color: #ff9bd0;
+            font-weight: 700;
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            font-size: 0.66rem;
+            text-transform: uppercase;
+            padding: 4px 9px;
+            border-radius: 6px;
+        }
+
+        .badge-bestseller-tag {
+            position: absolute;
+            bottom: 10px;
+            left: 12px;
+            z-index: 4;
+            background: linear-gradient(90deg, var(--gta-orange), var(--gta-pink));
+            color: #ffffff;
+            font-size: 0.64rem;
+            font-weight: 900;
+            letter-spacing: 0.8px;
+            padding: 3px 9px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .stock-pill {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 20px;
+            color: #49c4c4;
+            background: rgba(73, 196, 196, 0.12);
+            border: 1px solid rgba(73, 196, 196, 0.35);
+        }
+
+        .price-tag {
+            font-size: 1.55rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 10%, var(--gta-orange) 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-gta-primary {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.82rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            border-radius: 10px;
+            padding: 9px 14px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-gta-primary:hover {
+            background: linear-gradient(135deg, var(--gta-orange) 0%, var(--gta-pink) 100%);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-gta-primary.btn-gta-added {
+            background: linear-gradient(135deg, #1dd1a1 0%, var(--gta-teal) 100%) !important;
+        }
+
+        .gta-input {
+            background: rgba(10, 10, 16, 0.85) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            border-radius: 10px;
+            font-weight: 800;
+        }
+
+        .btn-gta-edit {
+            background: rgba(73, 196, 196, 0.12);
+            border: 1px solid rgba(73, 196, 196, 0.45);
+            color: var(--gta-teal);
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            padding: 5px 8px;
+        }
+
+        .btn-gta-delete {
+            background: rgba(255, 75, 75, 0.12);
+            border: 1px solid rgba(255, 75, 75, 0.45);
+            color: #ff6b6b;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 8px;
+            padding: 5px 8px;
+        }
+
+        /* Toast Flotante al Agregar al Carrito */
+        .cart-toast-gta {
+            position: fixed;
+            bottom: 26px;
+            right: 26px;
+            z-index: 3000;
+            background: linear-gradient(160deg, rgba(28, 16, 44, 0.96) 0%, rgba(11, 9, 20, 0.98) 100%);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(73, 196, 196, 0.55);
+            border-left: 4px solid var(--gta-teal);
+            border-radius: 16px;
+            padding: 14px 20px;
+            box-shadow: 0 15px 38px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #ffffff;
+            transform: translateY(120%);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+            max-width: 360px;
+        }
+
+        .cart-toast-gta.show-toast {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .footer-gta {
+            background: rgba(10, 8, 16, 0.92);
+            border-top: 1px solid rgba(241, 82, 164, 0.25);
+            padding: 24px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .results-wrapper {
+                padding-top: 120px;
+            }
+            .nav-logo-gta {
+                height: 34px;
+            }
+            .navbar-top-row {
+                gap: 8px;
+            }
+            .ml-search-form {
+                order: 3;
+                flex: 1 1 100%;
+                max-width: 100%;
+                margin-top: 4px;
+            }
+            .store-promo-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 16px;
+            }
+            .sort-bar-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .cart-toast-gta {
+                left: 12px;
+                right: 12px;
+                bottom: 14px;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .user-badge-gta { padding: 4px 10px 4px 6px; font-size: 0.75rem; }
+            .btn-hamburger-gta { padding: 6px 10px; font-size: 0.78rem; }
+            .sidebar-search-title { font-size: 1.35rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Superior con Opciones Minimizadas en el Botón de 3 Líneas -->
+    {% include 'catalogo/includes/navbar.html' %}
+
+    <!-- Contenedor Principal de Resultados (Inspirado en la 2da Imagen de Referencia) -->
+    <div class="results-wrapper">
+        <!-- Barra de Búsquedas Relacionadas -->
+        <div class="related-searches-bar mb-4">
+            <div class="container">
+                <strong class="text-white me-2">Búsquedas relacionadas:</strong>
+                <a href="{% url 'buscar_productos' %}?q=taladro">taladro percutor</a>
+                <span class="text-white-50 mx-1">-</span>
+                <a href="{% url 'buscar_productos' %}?q=destornillador">destornillador</a>
+                <span class="text-white-50 mx-1">-</span>
+                <a href="{% url 'buscar_productos' %}?q=martillo">martillo carpintero</a>
+                <span class="text-white-50 mx-1">-</span>
+                <a href="{% url 'buscar_productos' %}?q=esmeril">esmeril angular</a>
+                <span class="text-white-50 mx-1">-</span>
+                <a href="{% url 'buscar_productos' %}?categoria=Pinturas">pinturas y esmaltes</a>
+                <span class="text-white-50 mx-1">-</span>
+                <a href="{% url 'buscar_productos' %}?categoria=Eléctricas">herramientas eléctricas</a>
+                <span class="text-white-50 mx-1">-</span>
+                <a href="{% url 'buscar_productos' %}?categoria=Seguridad">seguridad industrial</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row g-4">
+                
+                <!-- ========================================================= -->
+                <!-- COLUMNA IZQUIERDA: SIDEBAR DE FILTROS Y CATEGORÍAS         -->
+                <!-- ========================================================= -->
+                <div class="col-12 col-lg-3">
+                    <div class="sidebar-breadcrumb">
+                        <a href="{% url 'buscar_productos' %}" class="text-white-50 text-decoration-none">Catálogo</a>
+                        {% if categoria_actual %} &rsaquo; {{ categoria_actual }}{% else %} &rsaquo; Todos los Productos{% endif %}
+                    </div>
+
+                    <h1 class="sidebar-search-title">{{ titulo_busqueda }}</h1>
+                    <div class="sidebar-results-count">+{{ total_resultados }} resultados encontrados</div>
+
+                    <!-- Chips de filtros activos con X para quitar -->
+                    <div class="mb-3">
+                        {% if search_query %}
+                            <a href="{% url 'buscar_productos' %}{% if categoria_actual %}?categoria={{ categoria_actual|urlencode }}{% endif %}" class="active-filter-tag">
+                                "{{ search_query }}" <i class="bi bi-x-lg"></i>
+                            </a>
+                        {% endif %}
+                        {% if categoria_actual %}
+                            <a href="{% url 'buscar_productos' %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}" class="active-filter-tag">
+                                {{ categoria_actual }} <i class="bi bi-x-lg"></i>
+                            </a>
+                        {% endif %}
+                        {% if max_precio_actual %}
+                            <a href="{% url 'buscar_productos' %}" class="active-filter-tag">
+                                Menos de ${{ max_precio_actual }} <i class="bi bi-x-lg"></i>
+                            </a>
+                        {% endif %}
+                        {% if disponibles_activo %}
+                            <a href="{% url 'buscar_productos' %}" class="active-filter-tag">
+                                En Stock <i class="bi bi-x-lg"></i>
+                            </a>
+                        {% endif %}
+                        {% if destacados_activo %}
+                            <a href="{% url 'buscar_productos' %}" class="active-filter-tag">
+                                Destacados <i class="bi bi-x-lg"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <!-- Tarjetas Switch (Igual que en la 2da Imagen de Mercado Libre) -->
+                    <a href="{% url 'buscar_productos' %}?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if categoria_actual %}categoria={{ categoria_actual|urlencode }}&{% endif %}{% if not disponibles_activo %}disponibles=1{% endif %}"
+                       class="filter-switch-card {% if disponibles_activo %}active-switch{% endif %}">
+                        <div>
+                            <div class="fw-bold small text-info">
+                                <i class="bi bi-lightning-charge-fill"></i> FULL Stock Inmediato
+                            </div>
+                            <div class="text-white-50" style="font-size: 0.72rem;">Unidades listas para retiro hoy</div>
+                        </div>
+                        <div class="switch-pill-ui"></div>
+                    </a>
+
+                    <a href="{% url 'buscar_productos' %}?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if categoria_actual %}categoria={{ categoria_actual|urlencode }}&{% endif %}{% if not max_precio_actual %}max_precio=10000{% endif %}"
+                       class="filter-switch-card {% if max_precio_actual == 10000 %}active-switch{% endif %}">
+                        <div>
+                            <div class="fw-bold small text-warning">
+                                <i class="bi bi-cash-coin"></i> Menos de $10.000
+                            </div>
+                            <div class="text-white-50" style="font-size: 0.72rem;">Precios bajos garantizados</div>
+                        </div>
+                        <div class="switch-pill-ui"></div>
+                    </a>
+
+                    <a href="{% url 'buscar_productos' %}?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if categoria_actual %}categoria={{ categoria_actual|urlencode }}&{% endif %}{% if not destacados_activo %}destacados=1{% endif %}"
+                       class="filter-switch-card {% if destacados_activo %}active-switch{% endif %}">
+                        <div>
+                            <div class="fw-bold small" style="color: #ff9bd0;">
+                                <i class="bi bi-fire"></i> Alto Impacto / Pro
+                            </div>
+                            <div class="text-white-50" style="font-size: 0.72rem;">Los que más destacan en potencia</div>
+                        </div>
+                        <div class="switch-pill-ui"></div>
+                    </a>
+
+                    <!-- Rango de Precios Interactivo (Slider) -->
+                    <div class="sidebar-section-title mt-4">Rango de Precio</div>
+                    <div class="p-3 rounded-3 mb-3" style="background: rgba(20, 14, 32, 0.85); border: 1px solid rgba(241, 82, 164, 0.35);">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-white-50">Hasta:</span>
+                            <span class="fw-bold text-warning" id="sliderPriceDisplay">${{ max_precio_actual|default:"80.000" }}</span>
+                        </div>
+                        <input type="range" class="form-range" id="priceRangeSlider" min="5000" max="80000" step="2500" value="{{ max_precio_actual|default:'80000' }}">
+                        <div class="d-flex justify-content-between text-white-50 mb-2" style="font-size: 0.68rem;">
+                            <span>$5.000</span>
+                            <span>$40.000</span>
+                            <span>$80.000</span>
+                        </div>
+                        <button type="button" id="btnApplyPriceFilter" class="btn btn-gta-primary btn-sm w-100 py-1" style="font-size: 0.74rem;">
+                            <i class="bi bi-funnel-fill me-1"></i> Aplicar Precio
+                        </button>
+                    </div>
+
+                    <!-- Listado de Categorías en el Sidebar Izquierdo -->
+                    <div class="sidebar-section-title">Categorías</div>
+                    <ul class="sidebar-cat-list">
+                        <li>
+                            <a href="{% url 'buscar_productos' %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}"
+                               class="sidebar-cat-link {% if not categoria_actual %}active{% endif %}">
+                                <span>Todas las categorías</span>
+                                <span class="badge bg-dark border border-secondary">{{ total_catalogo }}</span>
+                            </a>
+                        </li>
+                        {% for cat in categorias_sidebar %}
+                        <li>
+                            <a href="{% url 'buscar_productos' %}?categoria={{ cat.nombre|urlencode }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}"
+                               class="sidebar-cat-link {% if categoria_actual|lower == cat.nombre|lower %}active{% endif %}">
+                                <span>{{ cat.nombre }}</span>
+                                <span class="text-white-50 small">({{ cat.total }})</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- COLUMNA DERECHA: BANNER + ORDENAR POR + GRID DE PRODUCTOS  -->
+                <!-- ========================================================= -->
+                <div class="col-12 col-lg-9">
+
+                    <!-- Banner de Ofertas Flash con Cuenta Regresiva -->
+                    <div class="flash-sale-banner">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="fs-1 text-warning" style="filter: drop-shadow(0 0 10px rgba(245, 132, 38, 0.8));">⚡</div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-danger text-uppercase fw-bold px-2 py-1" style="letter-spacing: 1px; font-size: 0.65rem;">Oferta Flash</span>
+                                    <span class="text-white-50 small" style="font-size: 0.74rem;">Termina pronto en Vice City</span>
+                                </div>
+                                <div class="fw-bold text-white text-uppercase" style="font-size: 0.95rem; letter-spacing: 0.5px;">
+                                    Hasta <span style="color: var(--gta-pink); font-weight: 900;">40% OFF</span> en herramientas tácticas seleccionadas
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="flash-sale-timer">
+                                <span class="flash-digit-box" id="flashHours">03</span>
+                                <span class="text-white-50">:</span>
+                                <span class="flash-digit-box" id="flashMins">42</span>
+                                <span class="text-white-50">:</span>
+                                <span class="flash-digit-box" id="flashSecs">15</span>
+                            </div>
+                            <a href="{% url 'buscar_productos' %}?max_precio=10000" class="btn btn-sm btn-gta-primary text-nowrap px-3 py-2">
+                                Ver Ofertas
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Barra de Ordenamiento Superior Derecha -->
+                    <div class="sort-bar-row">
+                        <div class="text-white-50 small">
+                            Mostrando <strong>{{ total_resultados }}</strong> productos
+                            {% if categoria_actual %} en <strong class="text-warning">{{ categoria_actual }}</strong>{% endif %}
+                            {% if search_query %} para <strong class="text-info">"{{ search_query }}"</strong>{% endif %}
+                        </div>
+
+                        <form action="{% url 'buscar_productos' %}" method="get" class="d-flex align-items-center gap-2 m-0">
+                            {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                            {% if categoria_actual %}<input type="hidden" name="categoria" value="{{ categoria_actual }}">{% endif %}
+                            {% if disponibles_activo %}<input type="hidden" name="disponibles" value="1">{% endif %}
+                            {% if destacados_activo %}<input type="hidden" name="destacados" value="1">{% endif %}
+                            {% if max_precio_actual %}<input type="hidden" name="max_precio" value="{{ max_precio_actual }}">{% endif %}
+                            <label class="text-white-50 small fw-semibold text-nowrap">Ordenar por:</label>
+                            <select name="orden" class="sort-select-gta" onchange="this.form.submit()">
+                                <option value="relevantes" {% if orden_actual == 'relevantes' %}selected{% endif %}>Más relevantes</option>
+                                <option value="mas_vendidos" {% if orden_actual == 'mas_vendidos' %}selected{% endif %}>Más vendidos</option>
+                                <option value="ultimo_momento" {% if orden_actual == 'ultimo_momento' %}selected{% endif %}>De último momento</option>
+                                <option value="menor_precio" {% if orden_actual == 'menor_precio' %}selected{% endif %}>Menor precio</option>
+                                <option value="mayor_precio" {% if orden_actual == 'mayor_precio' %}selected{% endif %}>Mayor precio</option>
+                            </select>
+                        </form>
+                    </div>
+
+                    <!-- Grid de Tarjetas de Productos -->
+                    {% if productos %}
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4">
+                        {% for p in productos %}
+                        <div class="col">
+                            <div class="card card-gta h-100 position-relative">
+                                <!-- Botón Favorito ❤️ Flotante -->
+                                <form action="{% url 'toggle_favorito' p.id %}" method="post" class="js-fav-form position-absolute top-0 end-0 m-2" style="z-index: 5;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-fav-card {% if p.id in favoritos_ids %}is-fav{% endif %}" title="{% if p.id in favoritos_ids %}Quitar de Favoritos{% else %}Guardar en Favoritos{% endif %}">
+                                        <i class="bi {% if p.id in favoritos_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                                    </button>
+                                </form>
+
+                                {% if p.imagen %}
+                                    <a href="{% url 'detalle_producto' p.id %}" class="product-img-wrapper text-decoration-none">
+                                        {% if forloop.counter <= 3 and orden_actual == 'mas_vendidos' %}
+                                            <span class="badge-bestseller-tag">MÁS VENDIDO</span>
+                                        {% endif %}
+                                        <img src="{{ p.imagen.url }}" class="product-img" alt="{{ p.nombre }}">
+                                    </a>
+                                {% elif p.imagen_url %}
+                                    <a href="{% url 'detalle_producto' p.id %}" class="product-img-wrapper text-decoration-none">
+                                        {% if forloop.counter <= 3 and orden_actual == 'mas_vendidos' %}
+                                            <span class="badge-bestseller-tag">MÁS VENDIDO</span>
+                                        {% endif %}
+                                        <img src="{{ p.imagen_url }}" class="product-img" alt="{{ p.nombre }}">
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'detalle_producto' p.id %}" class="product-img-wrapper no-image-bg text-decoration-none">
+                                        <span class="fs-1">🛠️</span>
+                                    </a>
+                                {% endif %}
+
+                                <div class="card-body d-flex flex-column p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <a href="{% url 'buscar_productos' %}?categoria={{ p.categoria|urlencode }}" class="badge badge-categoria text-decoration-none">
+                                            {{ p.categoria }}
+                                        </a>
+                                        {% if p.stock > 0 %}
+                                            <span class="stock-pill">{{ p.stock }} disp.</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Agotado</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Badges Dinámicos de Oferta y Despacho -->
+                                    <div class="d-flex flex-wrap gap-1 mb-2">
+                                        {% if p.stock <= 3 and p.stock > 0 %}
+                                            <span class="badge bg-warning text-dark fw-bold" style="font-size: 0.62rem;">
+                                                <i class="bi bi-exclamation-triangle-fill"></i> ¡Últimas {{ p.stock }} un.!
+                                            </span>
+                                        {% endif %}
+                                        <span class="badge bg-success fw-bold" style="font-size: 0.62rem;">
+                                            <i class="bi bi-lightning-fill"></i> Envío Rápido
+                                        </span>
+                                        {% if p.precio <= 25000 %}
+                                            <span class="badge fw-bold" style="background: linear-gradient(90deg, #ff007f, #f58426); color: white; font-size: 0.62rem;">
+                                                <i class="bi bi-tag-fill"></i> 15% OFF
+                                            </span>
+                                        {% endif %}
+                                    </div>
+
+                                    <a href="{% url 'detalle_producto' p.id %}" class="text-decoration-none">
+                                        <h6 class="fw-bold text-white mb-1 hover-pink">{{ p.nombre }}</h6>
+                                    </a>
+                                    <div class="price-tag mb-1">${{ p.precio }}</div>
+                                    <div class="text-white-50 small mb-2" style="font-size: 0.72rem;">
+                                        en <strong class="text-info">6 cuotas de ${{ p.cuota_6 }}</strong> sin interés
+                                    </div>
+                                    <div class="text-info small mb-3" style="font-size: 0.72rem;">
+                                        <i class="bi bi-truck me-1"></i> Despacho rápido en Vice City
+                                    </div>
+
+                                    <div class="mt-auto">
+                                        {% if p.stock > 0 %}
+                                            <form action="{% url 'agregar_carrito' p.id %}" method="post" class="d-flex gap-2 add-to-cart-form" data-product-name="{{ p.nombre }}">
+                                                {% csrf_token %}
+                                                <input type="number" name="cantidad" min="1" max="{{ p.stock }}" value="1" class="form-control form-control-sm gta-input text-center" style="width: 58px;">
+                                                <button type="submit" class="btn btn-gta-primary btn-sm flex-grow-1">
+                                                    <i class="bi bi-cart-plus me-1"></i> Agregar
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button class="btn btn-secondary btn-sm w-100" disabled>Agotado</button>
+                                        {% endif %}
+
+                                        {% if user.is_superuser %}
+                                            <div class="d-flex justify-content-between mt-2 pt-2 border-top" style="border-color: rgba(255,255,255,0.08) !important;">
+                                                <a href="{% url 'editar_producto' p.id %}" class="btn btn-gta-edit w-50 me-1 text-center text-decoration-none">Editar</a>
+                                                <a href="{% url 'eliminar_producto' p.id %}" class="btn btn-gta-delete w-50 ms-1 text-center text-decoration-none">Borrar</a>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5 px-3 rounded-4" style="background: rgba(24,14,38,0.85); border: 1px solid rgba(241,82,164,0.3);">
+                        <div class="fs-1 mb-2">🔍</div>
+                        <h4 class="fw-bold text-white mb-2">No encontramos resultados para tu búsqueda</h4>
+                        <p class="text-white-50 small mb-3">Prueba quitando algún filtro o explorando todas las categorías.</p>
+                        <a href="{% url 'buscar_productos' %}" class="btn-nav-cart py-2 px-4">
+                            Ver Todos los Productos
+                        </a>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación Flotante cuando se agrega un producto sin recargar -->
+    <div class="cart-toast-gta" id="cartToastGta">
+        <div class="fs-4 text-info"><i class="bi bi-cart-check-fill"></i></div>
+        <div class="flex-grow-1">
+            <div class="text-info fw-bold text-uppercase" style="font-size: 0.68rem;">★ Equipamiento Añadido</div>
+            <div class="small text-white" id="cartToastText">Producto guardado en tu carrito.</div>
+        </div>
+        <a href="{% url 'ver_carrito' %}" class="btn-nav-cart py-1 px-3" style="font-size: 0.72rem;">Ver</a>
+    </div>
+
+    <footer class="footer-gta">
+        <div class="container">
+            <span class="small text-white-50">© 2026 <strong>Ferreterías VI</strong> — Todos los derechos reservados.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para agregar al carrito sin recargar la página y Menú -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+            const navCartBadge = document.getElementById('navCartBadge');
+            const cartToast = document.getElementById('cartToastGta');
+            const cartToastText = document.getElementById('cartToastText');
+            let toastTimeout = null;
+
+            function showCartToast(productName, quantity) {
+                if (!cartToast || !cartToastText) return;
+                cartToastText.innerHTML = `<strong>${quantity}x ${productName}</strong> guardado en tu carrito.`;
+                cartToast.classList.add('show-toast');
+                if (toastTimeout) clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    cartToast.classList.remove('show-toast');
+                }, 2800);
+            }
+
+            addToCartForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+                    const productName = form.getAttribute('data-product-name') || 'Producto';
+                    const formData = new FormData(form);
+                    const qty = formData.get('cantidad') || 1;
+
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '...';
+                    }
+
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data && data.ok !== false) {
+                            if (window.updateGtaCartBadges && typeof data.cart_count !== 'undefined') {
+                                window.updateGtaCartBadges(data.cart_count);
+                            }
+                            if (navCartBadge && typeof data.cart_count !== 'undefined') {
+                                navCartBadge.textContent = data.cart_count;
+                                navCartBadge.style.display = data.cart_count > 0 ? 'inline-block' : 'none';
+                                navCartBadge.classList.remove('cart-badge-pop');
+                                void navCartBadge.offsetWidth;
+                                navCartBadge.classList.add('cart-badge-pop');
+                            }
+                            if (submitBtn) {
+                                submitBtn.classList.add('btn-gta-added');
+                                submitBtn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> ¡Agregado!';
+                                setTimeout(() => {
+                                    submitBtn.classList.remove('btn-gta-added');
+                                    submitBtn.innerHTML = originalBtnHtml;
+                                    submitBtn.disabled = false;
+                                }, 1100);
+                            }
+                            showCartToast(data.producto_nombre || productName, data.cantidad || qty);
+                        } else if (submitBtn) {
+                            submitBtn.innerHTML = originalBtnHtml;
+                            submitBtn.disabled = false;
+                        }
+                    })
+                    .catch(() => {
+                        if (submitBtn) {
+                            submitBtn.innerHTML = originalBtnHtml;
+                            submitBtn.disabled = false;
+                        }
+                    });
+                });
+            });
+
+            // Contador de Ofertas Flash con Cuenta Regresiva
+            let totalFlashSeconds = 3 * 3600 + 42 * 60 + 15;
+            const elH = document.getElementById('flashHours');
+            const elM = document.getElementById('flashMins');
+            const elS = document.getElementById('flashSecs');
+
+            if (elH && elM && elS) {
+                setInterval(function() {
+                    if (totalFlashSeconds > 0) {
+                        totalFlashSeconds--;
+                    } else {
+                        totalFlashSeconds = 4 * 3600; // Reinicio dinámico de ciclo
+                    }
+                    const h = Math.floor(totalFlashSeconds / 3600);
+                    const m = Math.floor((totalFlashSeconds % 3600) / 60);
+                    const s = totalFlashSeconds % 60;
+                    elH.textContent = String(h).padStart(2, '0');
+                    elM.textContent = String(m).padStart(2, '0');
+                    elS.textContent = String(s).padStart(2, '0');
+                }, 1000);
+            }
+
+            // Slider de Rango de Precios
+            const priceSlider = document.getElementById('priceRangeSlider');
+            const priceDisplay = document.getElementById('sliderPriceDisplay');
+            const btnApplyPrice = document.getElementById('btnApplyPriceFilter');
+
+            if (priceSlider && priceDisplay) {
+                priceSlider.addEventListener('input', function() {
+                    const val = parseInt(this.value, 10);
+                    priceDisplay.textContent = '$' + val.toLocaleString('es-CL');
+                });
+            }
+
+            if (btnApplyPrice && priceSlider) {
+                btnApplyPrice.addEventListener('click', function() {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('max_precio', priceSlider.value);
+                    window.location.href = url.toString();
+                });
+            }
+        });
+    </script>
+    {% include 'catalogo/includes/autocompletado_widget.html' %}
+</body>
+</html>

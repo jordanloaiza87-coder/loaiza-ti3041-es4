@@ -1,0 +1,889 @@
+{% load static %}
+<style>
+    /* ===== NAVBAR OFICIAL GTA VI UNIFICADO ===== */
+    .navbar-gta {
+        background: rgba(10, 10, 14, 0.75) !important;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-bottom: 1px solid rgba(241, 82, 164, 0.25);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        z-index: 1050;
+    }
+
+    .navbar-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        padding: 4px 0;
+    }
+
+    .nav-logo-gta {
+        height: 46px;
+        max-height: 46px;
+        width: auto;
+        object-fit: contain;
+        border-radius: 6px;
+        filter: drop-shadow(0 0 10px rgba(241, 82, 164, 0.45));
+        transition: transform 0.25s ease;
+        display: block;
+    }
+
+    .nav-logo-gta:hover {
+        transform: scale(1.04);
+    }
+
+    /* Buscador central GTA VI */
+    .nav-search-wrapper {
+        flex: 1 1 auto;
+        max-width: 580px;
+        min-width: 0;
+        margin: 0 4px;
+        position: relative;
+    }
+
+    .search-input-group {
+        background: rgba(20, 14, 34, 0.95);
+        border: 1.5px solid rgba(241, 82, 164, 0.45);
+        border-radius: 9px;
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+        transition: all 0.25s ease;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .search-input-group:focus-within {
+        border-color: #49c4c4;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7), 0 0 18px rgba(73, 196, 196, 0.35);
+    }
+
+    .search-icon-neon {
+        color: #f152a4;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .search-input-gta {
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.84rem;
+        width: 100%;
+        min-width: 50px;
+        flex: 1 1 auto;
+        outline: none;
+    }
+
+    .search-input-gta::placeholder {
+        color: rgba(255, 255, 255, 0.45);
+        font-weight: 500;
+    }
+
+    .nav-cat-select {
+        background: rgba(14, 10, 24, 0.95);
+        border: 1px solid rgba(241, 82, 164, 0.4);
+        color: #ffffff;
+        border-radius: 7px;
+        padding: 4px 8px;
+        font-size: 0.74rem;
+        font-weight: 700;
+        outline: none;
+        cursor: pointer;
+        max-width: 140px;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+
+    .nav-cat-select:focus {
+        border-color: #49c4c4;
+        box-shadow: 0 0 8px rgba(73, 196, 196, 0.45);
+    }
+
+    .btn-nav-search-submit {
+        background: transparent;
+        border: none;
+        color: #49c4c4;
+        font-size: 1.25rem;
+        padding: 0 3px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .btn-nav-search-submit:hover {
+        color: #f152a4;
+        transform: scale(1.15);
+    }
+
+    @media (max-width: 900px) {
+        .nav-cat-select {
+            max-width: 105px;
+            font-size: 0.68rem;
+            padding: 3px 5px;
+        }
+    }
+
+    @media (max-width: 540px) {
+        .nav-cat-select {
+            display: none !important;
+        }
+    }
+
+    .nav-cat-select option {
+        background: #140e20;
+        color: #ffffff;
+        padding: 5px;
+    }
+
+    /* Floating Messages Toast GTA VI */
+    .gta-messages-toast-container {
+        position: fixed;
+        top: 65px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1099;
+        width: 92%;
+        max-width: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+    }
+
+    .gta-message-toast {
+        pointer-events: auto;
+        background: rgba(18, 12, 30, 0.96);
+        backdrop-filter: blur(16px);
+        border: 1.5px solid rgba(241, 82, 164, 0.5);
+        border-radius: 12px;
+        padding: 10px 16px;
+        color: #ffffff;
+        font-size: 0.84rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(241, 82, 164, 0.25);
+        animation: toastSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gta-message-toast.alert-success {
+        border-color: rgba(73, 196, 196, 0.7);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(73, 196, 196, 0.25);
+    }
+
+    .gta-message-toast.alert-warning {
+        border-color: rgba(245, 132, 38, 0.7);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(245, 132, 38, 0.25);
+    }
+
+    .gta-message-toast.alert-error,
+    .gta-message-toast.alert-danger {
+        border-color: rgba(255, 75, 75, 0.7);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(255, 75, 75, 0.25);
+    }
+
+    .btn-close-toast {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        font-size: 0.85rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        line-height: 1;
+        transition: color 0.2s ease;
+    }
+
+    .btn-close-toast:hover {
+        color: #ffffff;
+    }
+
+    @keyframes toastSlideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Badge Perfil */
+    .user-badge-gta {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(241, 82, 164, 0.4);
+        border-radius: 50px;
+        padding: 5px 14px 5px 8px;
+        font-size: 0.82rem;
+        color: #ffffff !important;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        flex-shrink: 0;
+    }
+
+    .user-badge-gta:hover {
+        background: linear-gradient(135deg, rgba(241, 82, 164, 0.25), rgba(245, 132, 38, 0.25));
+        border-color: #f152a4;
+        transform: translateY(-2px);
+        box-shadow: 0 0 18px rgba(241, 82, 164, 0.4);
+    }
+
+    .nav-avatar-img {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1.5px solid #49c4c4;
+        box-shadow: 0 0 8px rgba(73, 196, 196, 0.5);
+    }
+
+    .admin-tag-mini {
+        background: linear-gradient(135deg, #f152a4, #f58426);
+        color: #fff;
+        font-size: 0.62rem;
+        font-weight: 800;
+        padding: 2px 7px;
+        border-radius: 20px;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+    }
+
+    /* Botón Carrito Permanente junto al Perfil */
+    .btn-top-cart-gta {
+        background: linear-gradient(135deg, rgba(241, 82, 164, 0.22) 0%, rgba(245, 132, 38, 0.22) 100%);
+        border: 1px solid rgba(241, 82, 164, 0.55);
+        border-radius: 50px;
+        padding: 5px 13px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #ffffff !important;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        backdrop-filter: blur(10px);
+        transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        flex-shrink: 0;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-top-cart-gta:hover {
+        background: linear-gradient(135deg, #f152a4 0%, #f58426 100%);
+        border-color: #f152a4;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(241, 82, 164, 0.45);
+        color: #ffffff !important;
+    }
+
+    .btn-top-cart-gta i {
+        color: #49c4c4;
+        font-size: 0.95rem;
+    }
+
+    .btn-top-cart-gta:hover i {
+        color: #ffffff;
+    }
+
+    /* Botón Hamburguesa */
+    .btn-hamburger-gta {
+        position: relative;
+        background: linear-gradient(145deg, rgba(36, 22, 58, 0.95), rgba(18, 12, 32, 0.98));
+        border: 1.5px solid rgba(241, 82, 164, 0.55);
+        color: #ffffff;
+        border-radius: 9px;
+        padding: 5px 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        cursor: pointer;
+        flex-shrink: 0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 12px rgba(241, 82, 164, 0.2);
+        transition: all 0.25s ease;
+    }
+
+    .btn-hamburger-gta:hover,
+    .btn-hamburger-gta[aria-expanded="true"] {
+        border-color: #49c4c4;
+        background: linear-gradient(145deg, rgba(241, 82, 164, 0.28), rgba(42, 17, 75, 0.95));
+        box-shadow: 0 6px 20px rgba(73, 196, 196, 0.3);
+        color: #ffffff;
+    }
+
+    .btn-hamburger-gta .hamburger-lines-icon {
+        font-size: 1.35rem;
+        line-height: 1;
+        color: #f152a4;
+        transition: transform 0.25s ease, color 0.25s ease;
+    }
+
+    .btn-hamburger-gta[aria-expanded="true"] .hamburger-lines-icon {
+        color: #49c4c4;
+        transform: rotate(90deg);
+    }
+
+    .cart-badge-count {
+        background: #0a0a0c;
+        color: #49c4c4;
+        border: 1px solid #49c4c4;
+        border-radius: 50px;
+        padding: 1px 7px;
+        font-size: 0.72rem;
+        font-weight: 900;
+        box-shadow: 0 0 8px rgba(73, 196, 196, 0.5);
+    }
+
+    /* Botón de Sonido GTA VI */
+    .btn-sound-gta {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1.5px solid rgba(255, 255, 255, 0.18);
+        color: #ffd166;
+        border-radius: 9px;
+        padding: 5px 9px;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .btn-sound-gta:hover {
+        background: rgba(241, 82, 164, 0.25);
+        border-color: #f152a4;
+        transform: scale(1.08);
+        box-shadow: 0 0 14px rgba(241, 82, 164, 0.4);
+    }
+    .btn-sound-gta.sound-active {
+        background: linear-gradient(135deg, rgba(73, 196, 196, 0.28), rgba(241, 82, 164, 0.28));
+        border-color: #49c4c4;
+        color: #49c4c4;
+        box-shadow: 0 0 14px rgba(73, 196, 196, 0.45);
+    }
+
+    /* Panel desplegable - OCULTO POR DEFECTO */
+    #gtaNavMenuPanel {
+        display: none !important;
+    }
+
+    #gtaNavMenuPanel.show,
+    #gtaNavMenuPanel.is-open {
+        display: block !important;
+        animation: gtaMenuFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes gtaMenuFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .gta-collapse-panel {
+        position: relative;
+        z-index: 1060;
+        pointer-events: auto;
+        margin-top: 8px;
+        background: linear-gradient(165deg, rgba(22, 14, 38, 0.98) 0%, rgba(10, 8, 18, 0.99) 100%);
+        border: 1px solid rgba(241, 82, 164, 0.4);
+        border-radius: 16px;
+        padding: 16px 18px;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(241, 82, 164, 0.2);
+    }
+
+    .gta-menu-section-label {
+        font-size: 0.68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .gta-menu-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .gta-menu-item-btn {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 11px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #ffffff !important;
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 700;
+        transition: all 0.22s ease;
+        width: 100%;
+    }
+
+    .gta-menu-item-btn:hover {
+        background: rgba(241, 82, 164, 0.18);
+        border-color: #f152a4;
+        transform: translateY(-2px);
+    }
+
+    .gta-menu-item-btn.item-cart {
+        background: linear-gradient(135deg, rgba(241, 82, 164, 0.25) 0%, rgba(245, 132, 38, 0.25) 100%);
+        border-color: rgba(241, 82, 164, 0.55);
+    }
+
+    .gta-menu-item-btn.item-cart:hover {
+        background: linear-gradient(135deg, #f152a4 0%, #f58426 100%);
+    }
+
+    .gta-menu-item-btn.item-history {
+        background: rgba(245, 132, 38, 0.12);
+        border-color: rgba(245, 132, 38, 0.4);
+    }
+
+    .gta-menu-item-btn.item-admin {
+        background: rgba(73, 196, 196, 0.12);
+        border-color: rgba(73, 196, 196, 0.4);
+    }
+
+    .gta-menu-item-btn.item-logout {
+        background: rgba(255, 75, 75, 0.12);
+        border-color: rgba(255, 75, 75, 0.35);
+        color: #ffb3b3 !important;
+    }
+
+    .gta-menu-item-btn.item-logout:hover {
+        background: #ff4b4b;
+        color: #ffffff !important;
+    }
+
+    .header-subnav-link {
+        color: rgba(255, 255, 255, 0.75);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        font-size: 0.76rem;
+    }
+
+    .header-subnav-link:hover {
+        color: #ffffff;
+        background: rgba(241, 82, 164, 0.2);
+    }
+
+    @media (max-width: 576px) {
+        .navbar-top-row {
+            gap: 6px;
+        }
+        .nav-logo-gta {
+            height: 36px;
+            max-height: 36px;
+        }
+        .btn-hamburger-gta {
+            padding: 5px 8px;
+            font-size: 0.72rem;
+        }
+        .btn-hamburger-gta .hamburger-lines-icon {
+            font-size: 1.25rem;
+        }
+        .search-input-group {
+            padding: 4px 8px;
+            gap: 4px;
+        }
+        .search-input-gta {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<nav class="navbar navbar-dark navbar-gta fixed-top" id="mainGtaNavbar">
+    <div class="container">
+        <!-- Fila Superior Compacta: Marca + Barra Buscadora + Perfil + Menú -->
+        <div class="navbar-top-row">
+            <!-- Logo Oficial GTA VI Arriba a la Izquierda -->
+            <a class="navbar-brand m-0 p-0" href="{% url 'inicio' %}" title="Ferretería VI - Inicio">
+                <img src="{% static 'images/logo_ferreteria_vi.png' %}" alt="Ferretería VI Logo" class="nav-logo-gta">
+            </a>
+
+            <!-- Barra Buscadora Unificada GTA VI -->
+            <form action="{% url 'buscar_productos' %}" method="get" class="nav-search-wrapper" id="topNavSearchForm" role="search">
+                <div class="search-input-group">
+                    <i class="bi bi-search search-icon-neon"></i>
+                    <input type="text" name="q" id="productSearchInput" class="search-input-gta" value="{{ search_query|default:'' }}" placeholder="Buscar productos, herramientas..." autocomplete="off">
+                    <select name="categoria" id="topCategorySelect" class="nav-cat-select" title="Filtrar por categoría">
+                        <option value="">Categorías</option>
+                        {% for cat in nav_categorias %}
+                            <option value="{{ cat }}" {% if categoria_actual|lower == cat|lower %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn-nav-search-submit" title="Buscar">
+                        <i class="bi bi-arrow-right-circle-fill"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Perfil + Carrito + Sonido + Botón de las 3 Líneas -->
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <!-- Carrito Permanente al Lado del Perfil (Solo clientes y visitantes, nunca admin) -->
+                {% if not user.is_superuser %}
+                    <a href="{% url 'ver_carrito' %}" class="btn-top-cart-gta" id="topNavCartBtn" title="Ver Mi Carrito de Compras">
+                        <i class="bi bi-cart3"></i>
+                        <span class="d-none d-sm-inline">Carrito</span>
+                        <span class="cart-badge-count" id="topNavCartBadge" {% if not cart_count or cart_count == 0 %}style="display: none;"{% endif %}>{{ cart_count|default:0 }}</span>
+                    </a>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'mi_perfil' %}" class="user-badge-gta" title="Ir a Mi Perfil">
+                        {% if user.perfil.avatar_url %}
+                            <img src="{{ user.perfil.avatar_url }}" alt="{{ user.username }}" class="nav-avatar-img">
+                        {% else %}
+                            <i class="bi bi-person-circle fs-6 text-info"></i>
+                        {% endif %}
+                        <span class="d-none d-md-inline"><strong>{{ user.username }}</strong></span>
+                        {% if user.is_superuser %}
+                            <span class="admin-tag-mini d-none d-sm-inline">Admin</span>
+                        {% endif %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="user-badge-gta" title="Iniciar Sesión o Registrarse">
+                        <i class="bi bi-person-circle fs-6 text-info"></i>
+                        <span class="d-none d-sm-inline"><strong>Ingresar</strong></span>
+                    </a>
+                {% endif %}
+
+                <!-- Interruptor de Efectos de Sonido GTA VI -->
+                <button type="button" class="btn-sound-gta" id="gtaSoundToggleBtn" onclick="toggleGtaSound(event)" title="Sonido GTA VI: Silenciado (Clic para activar)">
+                    <i class="bi bi-volume-mute-fill" id="gtaSoundIcon"></i>
+                </button>
+
+                <!-- Botón de las 3 Líneas que despliega Carrito, Opciones y Mis Compras -->
+                <button class="btn-hamburger-gta" type="button" id="navHamburgerBtn" onclick="toggleGtaMenu(event)" aria-controls="gtaNavMenuPanel" aria-expanded="false" aria-label="Abrir menú de opciones">
+                    <i class="bi bi-list hamburger-lines-icon"></i>
+                    <span class="d-none d-sm-inline">Menú</span>
+                    {% if not user.is_superuser %}
+                        <span class="cart-badge-count" id="navCartBadge" {% if not cart_count or cart_count == 0 %}style="display: none;"{% endif %}>{{ cart_count|default:0 }}</span>
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+
+        <!-- Panel Desplegable al apretar las 3 líneas -->
+        <div class="collapse" id="gtaNavMenuPanel">
+            <div class="gta-collapse-panel">
+                <span class="gta-menu-section-label">Accesos de Compras y Cuenta</span>
+                <div class="gta-menu-actions-grid mb-3">
+                    {% if not user.is_superuser %}
+                        <!-- Carrito -->
+                        <a href="{% url 'ver_carrito' %}" class="gta-menu-item-btn item-cart">
+                            <span class="d-flex align-items-center gap-2">
+                                <i class="bi bi-cart3 fs-6"></i>
+                                <span>Mi Carrito</span>
+                            </span>
+                            <span class="badge rounded-pill bg-dark text-info border border-info border-opacity-50" id="menuCartBadgeCount">{{ cart_count|default:0 }}</span>
+                        </a>
+
+                        <!-- Favoritos -->
+                        <a href="{% url 'mis_favoritos' %}" class="gta-menu-item-btn">
+                            <span class="d-flex align-items-center gap-2">
+                                <i class="bi bi-heart fs-6 text-warning"></i>
+                                <span>Favoritos</span>
+                            </span>
+                            <span class="badge rounded-pill bg-dark text-warning border border-warning border-opacity-50" id="menuFavBadgeCount">{{ fav_count|default:0 }}</span>
+                        </a>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        {% if not user.is_superuser %}
+                            <!-- Mis Compras (Solo clientes, nunca admin) -->
+                            <a href="{% url 'historial_compras' %}" class="gta-menu-item-btn item-history">
+                                <span class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-receipt fs-6 text-warning"></i>
+                                    <span>Mis Compras</span>
+                                </span>
+                                <i class="bi bi-chevron-right small text-white-50"></i>
+                            </a>
+                        {% else %}
+                            <!-- Dashboard Admin -->
+                            <a href="{% url 'panel_admin' %}" class="gta-menu-item-btn item-admin" style="border-color: rgba(73,196,196,0.45);">
+                                <span class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-graph-up-arrow text-info fs-6"></i>
+                                    <span>Dashboard Admin</span>
+                                </span>
+                                <span class="badge bg-info text-dark">PRO</span>
+                            </a>
+
+                            <!-- Admin: Control de Despachos y Pedidos -->
+                            <a href="{% url 'gestion_despachos' %}" class="gta-menu-item-btn item-admin" style="border-color: rgba(245,132,38,0.45);">
+                                <span class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-truck text-warning fs-6"></i>
+                                    <span>Gestión de Despachos</span>
+                                </span>
+                                <span class="badge bg-warning text-dark fw-bold">ENVÍOS</span>
+                            </a>
+
+                            <!-- Admin: Agregar Producto -->
+                            <a href="{% url 'agregar_producto' %}" class="gta-menu-item-btn item-admin">
+                                <span class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-box-seam fs-6 text-info"></i>
+                                    <span>Agregar Producto</span>
+                                </span>
+                                <i class="bi bi-plus-circle small text-info"></i>
+                            </a>
+                        {% endif %}
+
+                        <!-- Cerrar Sesión -->
+                        <form action="{% url 'logout' %}" method="post" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="gta-menu-item-btn item-logout">
+                                <span class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-power fs-6"></i>
+                                    <span>Cerrar Sesión</span>
+                                </span>
+                                <i class="bi bi-box-arrow-right small"></i>
+                            </button>
+                        </form>
+                    {% else %}
+                        <!-- Iniciar Sesión -->
+                        <a href="{% url 'login' %}" class="gta-menu-item-btn">
+                            <span class="d-flex align-items-center gap-2">
+                                <i class="bi bi-box-arrow-in-right fs-6 text-info"></i>
+                                <span>Iniciar Sesión</span>
+                            </span>
+                            <i class="bi bi-chevron-right small text-white-50"></i>
+                        </a>
+                        <!-- Registrarse -->
+                        <a href="{% url 'registrar_usuario' %}" class="gta-menu-item-btn item-admin">
+                            <span class="d-flex align-items-center gap-2">
+                                <i class="bi bi-person-plus fs-6 text-info"></i>
+                                <span>Registrarse</span>
+                            </span>
+                            <i class="bi bi-chevron-right small text-white-50"></i>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Enlaces Rápidos del Catálogo dentro del desplegable -->
+                <div class="pt-2 border-top" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                    <span class="gta-menu-section-label mb-2">Explorar Catálogo</span>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <div class="d-flex flex-wrap align-items-center gap-1">
+                            <a href="{% url 'buscar_productos' %}" class="header-subnav-link">Todos los Productos</a>
+                            <a href="{% url 'buscar_productos' %}?orden=mas_vendidos" class="header-subnav-link">Más vendidos</a>
+                            <a href="{% url 'buscar_productos' %}?orden=ultimo_momento" class="header-subnav-link">Último momento</a>
+                            <a href="{% url 'buscar_productos' %}?max_precio=10000" class="header-subnav-link">Menos de $10.000</a>
+                            <a href="{% url 'buscar_productos' %}?destacados=1" class="header-subnav-link">Destacados</a>
+                        </div>
+                        <span class="text-white-50 d-none d-md-inline" style="font-size: 0.72rem;">
+                            Envío gratis en tu primera compra en Vice City
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="gta-messages-toast-container" id="gtaMessagesContainer">
+    {% for message in messages %}
+        <div class="gta-message-toast alert-{{ message.tags|default:'info' }}" role="alert">
+            <span class="d-flex align-items-center gap-2">
+                {% if message.tags == 'error' or message.tags == 'danger' %}
+                    <i class="bi bi-x-octagon-fill text-danger fs-5 flex-shrink-0"></i>
+                {% elif message.tags == 'warning' %}
+                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5 flex-shrink-0"></i>
+                {% elif message.tags == 'success' %}
+                    <i class="bi bi-check-circle-fill text-success fs-5 flex-shrink-0"></i>
+                {% else %}
+                    <i class="bi bi-info-circle-fill text-info fs-5 flex-shrink-0"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </span>
+            <button type="button" class="btn-close-toast" onclick="this.parentElement.remove()" title="Cerrar aviso">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% include 'catalogo/includes/autocompletado_widget.html' %}
+
+<script>
+window.toggleGtaMenu = function(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    const menuPanel = document.getElementById('gtaNavMenuPanel');
+    const hamburgerBtn = document.getElementById('navHamburgerBtn');
+    if (!menuPanel) return;
+
+    const isCurrentlyOpen = menuPanel.classList.contains('show') || menuPanel.classList.contains('is-open');
+    if (isCurrentlyOpen) {
+        menuPanel.classList.remove('show', 'is-open');
+        menuPanel.style.setProperty('display', 'none', 'important');
+        if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'false');
+    } else {
+        menuPanel.classList.add('show', 'is-open');
+        menuPanel.style.setProperty('display', 'block', 'important');
+        if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'true');
+    }
+};
+
+// Cerrar si hace clic fuera del menú
+document.addEventListener('click', function(e) {
+    const menuPanel = document.getElementById('gtaNavMenuPanel');
+    const hamburgerBtn = document.getElementById('navHamburgerBtn');
+    if (menuPanel && hamburgerBtn) {
+        if (!menuPanel.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+            menuPanel.classList.remove('show', 'is-open');
+            menuPanel.style.setProperty('display', 'none', 'important');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+        }
+    }
+});
+
+// Auto-desvanecer mensajes de alerta tras 4 segundos
+setTimeout(function() {
+    document.querySelectorAll('.gta-message-toast').forEach(function(toast) {
+        toast.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-8px)';
+        setTimeout(function() { toast.remove(); }, 400);
+    });
+}, 4000);
+
+// Sintetizador Web Audio API para Efectos de Sonido GTA VI
+const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+let gtaAudioCtx = null;
+function getGtaAudio() {
+    if (!gtaAudioCtx && AudioCtxClass) gtaAudioCtx = new AudioCtxClass();
+    if (gtaAudioCtx && gtaAudioCtx.state === 'suspended') gtaAudioCtx.resume();
+    return gtaAudioCtx;
+}
+
+window.playGtaCashSound = function() {
+    if (localStorage.getItem('gtaSoundActive') !== '1') return;
+    try {
+        const ctx = getGtaAudio();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(987.77, now);
+        osc.frequency.setValueAtTime(1318.51, now + 0.08);
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+    } catch(e) {}
+};
+
+window.playGtaMissionSound = function() {
+    if (localStorage.getItem('gtaSoundActive') !== '1') return;
+    try {
+        const ctx = getGtaAudio();
+        if (!ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, i) => {
+            const now = ctx.currentTime + i * 0.11;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.24, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.3);
+        });
+    } catch(e) {}
+};
+
+window.toggleGtaSound = function(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    const isActive = localStorage.getItem('gtaSoundActive') === '1';
+    const nextState = !isActive;
+    localStorage.setItem('gtaSoundActive', nextState ? '1' : '0');
+    updateSoundBtnUI(nextState);
+    if (nextState) {
+        playGtaCashSound();
+    }
+};
+
+function updateSoundBtnUI(active) {
+    const btn = document.getElementById('gtaSoundToggleBtn');
+    const icon = document.getElementById('gtaSoundIcon');
+    if (!btn || !icon) return;
+    if (active) {
+        btn.classList.add('sound-active');
+        icon.className = 'bi bi-volume-up-fill';
+        btn.title = 'Sonido GTA VI: Activado (Clic para silenciar)';
+    } else {
+        btn.classList.remove('sound-active');
+        icon.className = 'bi bi-volume-mute-fill';
+        btn.title = 'Sonido GTA VI: Silenciado (Clic para activar)';
+    }
+}
+
+window.updateGtaCartBadges = function(count) {
+    const num = parseInt(count, 10) || 0;
+    const badges = [
+        document.getElementById('topNavCartBadge'),
+        document.getElementById('navCartBadge'),
+        document.getElementById('menuCartBadgeCount')
+    ];
+    badges.forEach(b => {
+        if (!b) return;
+        b.textContent = num;
+        b.style.display = num > 0 ? 'inline-block' : 'none';
+    });
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateSoundBtnUI(localStorage.getItem('gtaSoundActive') === '1');
+    document.querySelectorAll('.add-to-cart-form, .add-to-cart-btn, .btn-add-cart').forEach(el => {
+        el.addEventListener('click', () => { window.playGtaCashSound(); });
+    });
+
+    const topCatSelect = document.getElementById('topCategorySelect');
+    if (topCatSelect) {
+        topCatSelect.addEventListener('change', function() {
+            if (this.form) this.form.submit();
+        });
+    }
+});
+</script>

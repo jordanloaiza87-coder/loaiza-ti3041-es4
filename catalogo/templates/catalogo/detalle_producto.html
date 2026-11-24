@@ -1,0 +1,415 @@
+{% extends 'catalogo/base.html' %}
+{% load static %}
+
+{% block title %}{{ producto.nombre }} - Detalle Táctico | Ferreterías VI{% endblock %}
+
+
+
+{% block extra_css %}
+<style>
+    .detail-card-gta {
+        background: linear-gradient(160deg, rgba(22, 14, 38, 0.94) 0%, rgba(11, 8, 20, 0.97) 100%);
+        border: 1.5px solid rgba(241, 82, 164, 0.35);
+        border-radius: 24px;
+        padding: 32px;
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.75);
+    }
+
+    .detail-img-showcase {
+        background: radial-gradient(circle at center, rgba(241, 82, 164, 0.16) 0%, rgba(12, 9, 22, 0.95) 75%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        height: 390px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        padding: 20px;
+    }
+
+    .detail-img-showcase img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.65));
+        transition: transform 0.35s ease;
+    }
+
+    .detail-img-showcase:hover img {
+        transform: scale(1.05);
+    }
+
+    .detail-price-big {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--gta-yellow);
+        text-shadow: 0 0 18px rgba(255, 246, 133, 0.35);
+    }
+
+    .spec-badge-box {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 12px 15px;
+    }
+
+    .btn-add-detail-gta {
+        background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+        border: none;
+        color: #ffffff !important;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        border-radius: 14px;
+        padding: 13px 24px;
+        box-shadow: 0 8px 24px rgba(241, 82, 164, 0.45);
+        transition: all 0.25s ease;
+    }
+
+    .btn-add-detail-gta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 28px rgba(245, 132, 38, 0.6);
+    }
+
+    .review-card-gta {
+        background: rgba(18, 12, 32, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+    }
+
+    .related-card-mini {
+        background: rgba(20, 13, 34, 0.9);
+        border: 1px solid rgba(241, 82, 164, 0.25);
+        border-radius: 16px;
+        padding: 14px;
+        height: 100%;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .related-card-mini:hover {
+        border-color: var(--gta-teal);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+        color: #fff;
+    }
+
+    @media (max-width: 768px) {
+        .detail-card-gta {
+            padding: 20px 16px;
+        }
+        .detail-img-showcase {
+            height: 260px;
+        }
+        .detail-price-big {
+            font-size: 2rem;
+        }
+    }
+
+    /* Calculadora de Cuotas GTA VI */
+    .installment-box {
+        background: rgba(73, 196, 196, 0.08);
+        border: 1px solid rgba(73, 196, 196, 0.35);
+        border-radius: 12px;
+        padding: 10px 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Selector Interactivo de Estrellas */
+    .star-item {
+        font-size: 1.4rem;
+        color: rgba(255, 255, 255, 0.25);
+        cursor: pointer;
+        transition: transform 0.15s ease, color 0.15s ease;
+    }
+    .star-item:hover {
+        transform: scale(1.25);
+    }
+    .star-item.active,
+    .star-item.hovered {
+        color: #ffc107 !important;
+        filter: drop-shadow(0 0 6px rgba(255, 193, 7, 0.6));
+    }
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container">
+    <!-- Migas de Pan y Botón Volver al Catálogo -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+        <div class="small text-white-50">
+            <a href="{% url 'buscar_productos' %}" class="text-info text-decoration-none fw-bold">Catálogo</a>
+            <span class="mx-1">&rsaquo;</span>
+            <a href="{% url 'buscar_productos' %}?categoria={{ producto.categoria|urlencode }}" class="text-white-50 text-decoration-none">{{ producto.categoria }}</a>
+            <span class="mx-1">&rsaquo;</span>
+            <span class="text-white">{{ producto.nombre }}</span>
+        </div>
+
+        <a href="{% url 'buscar_productos' %}" class="btn btn-sm btn-outline-light rounded-pill px-3 fw-bold">
+            <i class="bi bi-grid-fill me-1"></i> Seguir Comprando en Catálogo
+        </a>
+    </div>
+
+    <!-- Ficha Principal del Producto -->
+    <div class="detail-card-gta mb-5">
+        <div class="row g-4 align-items-center">
+            <!-- Imagen y Favorito -->
+            <div class="col-lg-5">
+                <div class="detail-img-showcase">
+                    <form action="{% url 'toggle_favorito' producto.id %}" method="post" class="js-fav-form position-absolute top-0 end-0 m-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-fav-card {% if es_favorito %}is-fav{% endif %}" title="Guardar en Mis Favoritos">
+                            <i class="bi {% if es_favorito %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                        </button>
+                    </form>
+
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                    {% elif producto.imagen_url %}
+                        <img src="{{ producto.imagen_url }}" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <div style="font-size: 5rem;">🛠️</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Información Técnica y Compra -->
+            <div class="col-lg-7">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge rounded-pill px-3 py-2" style="background: rgba(73,196,196,0.18); color: var(--gta-teal); border: 1px solid rgba(73,196,196,0.4);">
+                        <i class="bi bi-tag-fill me-1"></i> {{ producto.categoria }}
+                    </span>
+                    <span class="badge rounded-pill bg-dark border border-warning text-warning px-3 py-2">
+                        ★ {{ promedio_estrellas }} ({{ total_resenas }} opiniones)
+                    </span>
+                    {% if unidades_vendidas > 0 %}
+                        <span class="badge rounded-pill bg-dark border border-secondary text-white-50 px-3 py-2">
+                            +{{ unidades_vendidas }} vendidos
+                        </span>
+                    {% endif %}
+                </div>
+
+                <h1 class="fw-black mb-2" style="font-weight: 900; font-size: 2.1rem;">{{ producto.nombre }}</h1>
+
+                <div class="detail-price-big mb-2">${{ producto.precio }}</div>
+
+                <!-- Calculadora de Cuotas sin Interés -->
+                <div class="installment-box mb-4">
+                    <i class="bi bi-credit-card-2-front-fill text-info fs-4"></i>
+                    <div>
+                        <div class="fw-bold text-white small">
+                            Hasta <span class="text-warning">6 cuotas sin interés</span> de <strong class="text-info">${{ cuota_6 }}</strong>
+                        </div>
+                        <div class="text-white-50" style="font-size: 0.72rem;">
+                            Con tarjetas de débito o crédito Webpay Plus en Vice City
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Especificaciones y Garantías -->
+                <div class="row g-2 mb-4">
+                    <div class="col-sm-4">
+                        <div class="spec-badge-box">
+                            <div class="text-white-50" style="font-size: 0.7rem; text-transform: uppercase;">Disponibilidad</div>
+                            {% if producto.stock > 0 %}
+                                <div class="fw-bold text-info"><i class="bi bi-check-circle-fill me-1"></i> {{ producto.stock }} en Stock</div>
+                            {% else %}
+                                <div class="fw-bold text-danger"><i class="bi bi-x-circle-fill me-1"></i> Agotado</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="spec-badge-box">
+                            <div class="text-white-50" style="font-size: 0.7rem; text-transform: uppercase;">Garantía Oficial</div>
+                            <div class="fw-bold text-warning"><i class="bi bi-shield-check me-1"></i> 12 Meses Vice City</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="spec-badge-box">
+                            <div class="text-white-50" style="font-size: 0.7rem; text-transform: uppercase;">Despacho</div>
+                            <div class="fw-bold text-white"><i class="bi bi-truck me-1 text-info"></i> Retiro / Envío Hoy</div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if producto.stock > 0 %}
+                <form action="{% url 'agregar_carrito' producto.id %}" method="post" class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                    {% csrf_token %}
+                    <div style="width: 110px;">
+                        <label class="small text-white-50 d-block mb-1">Cantidad</label>
+                        <input type="number" name="cantidad" value="1" min="1" max="{{ producto.stock }}" class="form-control bg-dark text-white border-secondary fw-bold text-center">
+                    </div>
+                    <div class="flex-grow-1 pt-3">
+                        <button type="submit" class="btn-add-detail-gta w-100">
+                            <i class="bi bi-cart-plus-fill me-2"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <button class="btn btn-secondary w-100 py-3 fw-bold disabled mb-3">Sin Stock Disponible</button>
+                {% endif %}
+
+                {% if user.is_superuser %}
+                <div class="d-flex gap-2 pt-3 border-top border-white border-opacity-10">
+                    <a href="{% url 'editar_producto' producto.id %}" class="btn btn-sm btn-outline-info rounded-pill px-3">
+                        <i class="bi bi-pencil-fill me-1"></i> Editar Producto
+                    </a>
+                    <a href="{% url 'eliminar_producto' producto.id %}" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                        <i class="bi bi-trash3-fill me-1"></i> Eliminar
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Columna Izquierda: Opiniones y Valoraciones 1-5 Estrellas -->
+        <div class="col-lg-7">
+            <div class="detail-card-gta">
+                <h4 class="fw-bold mb-3"><i class="bi bi-star-fill text-warning me-2"></i> Valoraciones de Clientes ({{ total_resenas }})</h4>
+
+                {% if mensaje_resena %}
+                    <div class="alert alert-info py-2 small">{{ mensaje_resena }}</div>
+                {% endif %}
+                {% if error_resena %}
+                    <div class="alert alert-danger py-2 small">{{ error_resena }}</div>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <form method="post" class="mb-4 p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                    {% csrf_token %}
+                    <input type="hidden" name="accion" value="publicar_resena">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                        <label class="fw-bold small text-info">Tu Calificación:</label>
+                        <div class="d-flex align-items-center gap-1" id="interactiveStarPicker">
+                            <input type="hidden" name="estrellas" id="selectedStarInput" value="5">
+                            <i class="bi bi-star-fill star-item active" data-val="1"></i>
+                            <i class="bi bi-star-fill star-item active" data-val="2"></i>
+                            <i class="bi bi-star-fill star-item active" data-val="3"></i>
+                            <i class="bi bi-star-fill star-item active" data-val="4"></i>
+                            <i class="bi bi-star-fill star-item active" data-val="5"></i>
+                            <span class="ms-2 small text-warning fw-bold" id="starLabel">5/5 Excelente</span>
+                        </div>
+                    </div>
+                    <textarea name="comentario" rows="2" class="form-control bg-dark text-white border-secondary mb-2 small" placeholder="Escribe tu experiencia con esta herramienta..." required></textarea>
+                    <button type="submit" class="btn btn-sm btn-info fw-bold rounded-pill px-3 text-dark">
+                        <i class="bi bi-send-fill me-1"></i> Publicar Valoración
+                    </button>
+                </form>
+                {% else %}
+                <div class="p-3 rounded-4 mb-4 text-white-50 small" style="background: rgba(255,255,255,0.04);">
+                    <a href="{% url 'login' %}?next={% url 'detalle_producto' producto.id %}" class="text-info fw-bold">Inicia sesión</a> para dejar tu calificación con estrellas y comentario.
+                </div>
+                {% endif %}
+
+                {% for r in resenas %}
+                <div class="review-card-gta">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-white"><i class="bi bi-person-circle text-info me-1"></i> {{ r.usuario.username }}</strong>
+                        <span class="text-warning small fw-bold">
+                            {% for _ in "12345"|make_list %}
+                                {% if forloop.counter <= r.estrellas %}★{% else %}☆{% endif %}
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <p class="text-white-50 small mb-1">{{ r.comentario }}</p>
+                    <small class="text-secondary" style="font-size: 0.7rem;">{{ r.fecha|date:"d/m/Y H:i" }}</small>
+                </div>
+                {% empty %}
+                <p class="text-white-50 small mb-0">Sé el primero en calificar esta herramienta.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Productos Similares -->
+        <div class="col-lg-5">
+            <div class="detail-card-gta">
+                <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge-fill text-info me-1"></i> Productos Similares</h5>
+                <div class="row g-3">
+                    {% for rel in relacionados %}
+                    <div class="col-6">
+                        <a href="{% url 'detalle_producto' rel.id %}" class="related-card-mini">
+                            <div>
+                                <div class="text-center mb-2" style="height: 90px; display:flex; align-items:center; justify-content:center;">
+                                    {% if rel.imagen %}
+                                        <img src="{{ rel.imagen.url }}" alt="{{ rel.nombre }}" style="max-height: 85px; max-width: 100%; object-fit: contain;">
+                                    {% elif rel.imagen_url %}
+                                        <img src="{{ rel.imagen_url }}" alt="{{ rel.nombre }}" style="max-height: 85px; max-width: 100%; object-fit: contain;">
+                                    {% else %}
+                                        <span class="fs-2">🛠️</span>
+                                    {% endif %}
+                                </div>
+                                <div class="small text-info text-uppercase" style="font-size: 0.65rem;">{{ rel.categoria }}</div>
+                                <div class="fw-bold small text-truncate">{{ rel.nombre }}</div>
+                            </div>
+                            <div class="fw-black text-warning mt-2" style="font-weight: 900;">${{ rel.precio }}</div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const picker = document.getElementById('interactiveStarPicker');
+    if (!picker) return;
+    const input = document.getElementById('selectedStarInput');
+    const label = document.getElementById('starLabel');
+    const stars = picker.querySelectorAll('.star-item');
+    const texts = {
+        1: "1/5 Bajo",
+        2: "2/5 Regular",
+        3: "3/5 Bueno",
+        4: "4/5 Muy Bueno",
+        5: "5/5 Excelente"
+    };
+
+    function highlightStars(val) {
+        stars.forEach(s => {
+            const starVal = parseInt(s.getAttribute('data-val'));
+            if (starVal <= val) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+        if (label) label.textContent = texts[val] || (val + "/5");
+    }
+
+    stars.forEach(s => {
+        s.addEventListener('mouseenter', function() {
+            const val = parseInt(this.getAttribute('data-val'));
+            highlightStars(val);
+        });
+        s.addEventListener('click', function() {
+            const val = parseInt(this.getAttribute('data-val'));
+            input.value = val;
+            highlightStars(val);
+            if (window.playGtaCashSound) window.playGtaCashSound();
+        });
+    });
+
+    picker.addEventListener('mouseleave', function() {
+        highlightStars(parseInt(input.value) || 5);
+    });
+});
+</script>
+{% endblock %}

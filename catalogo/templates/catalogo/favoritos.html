@@ -1,0 +1,132 @@
+{% extends 'catalogo/base.html' %}
+{% load static %}
+
+{% block title %}Mis Favoritos ❤️ - Ferreterías VI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .fav-card-gta {
+        background: linear-gradient(160deg, rgba(22, 14, 38, 0.94) 0%, rgba(11, 8, 20, 0.97) 100%);
+        border: 1.5px solid rgba(241, 82, 164, 0.35);
+        border-radius: 20px;
+        padding: 18px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 14px 35px rgba(0, 0, 0, 0.65);
+        transition: all 0.25s ease;
+        position: relative;
+    }
+
+    .fav-card-gta:hover {
+        border-color: var(--gta-teal);
+        transform: translateY(-4px);
+    }
+
+    .fav-img-box {
+        height: 170px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.04);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .fav-img-box img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    .btn-gta-add {
+        background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+        border: none;
+        color: #fff !important;
+        font-weight: 800;
+        border-radius: 12px;
+        padding: 9px 14px;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+        <div>
+            <h1 class="fw-black m-0" style="font-weight: 900; font-size: 2rem;">❤️ Mis Productos Guardados</h1>
+            <div class="text-white-50 small">Lista de herramientas favoritas listas para agregar a tu carrito</div>
+        </div>
+        <a href="{% url 'buscar_productos' %}" class="btn btn-outline-info rounded-pill px-4 fw-bold btn-sm">
+            <i class="bi bi-grid-fill me-1"></i> Seguir Explorando Catálogo
+        </a>
+    </div>
+
+    {% if productos %}
+    <div class="row g-4">
+        {% for p in productos %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="fav-card-gta">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-dark border border-info text-info">{{ p.categoria }}</span>
+                        <form action="{% url 'toggle_favorito' p.id %}" method="post" class="m-0">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{% url 'mis_favoritos' %}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-2 py-0" title="Quitar de Favoritos">
+                                <i class="bi bi-heartbreak-fill"></i> Quitar
+                            </button>
+                        </form>
+                    </div>
+
+                    <a href="{% url 'detalle_producto' p.id %}" class="text-decoration-none">
+                        <div class="fav-img-box">
+                            {% if p.imagen %}
+                                <img src="{{ p.imagen.url }}" alt="{{ p.nombre }}">
+                            {% elif p.imagen_url %}
+                                <img src="{{ p.imagen_url }}" alt="{{ p.nombre }}">
+                            {% else %}
+                                <span style="font-size: 3rem;">🛠️</span>
+                            {% endif %}
+                        </div>
+                        <h6 class="fw-bold text-white mb-1">{{ p.nombre }}</h6>
+                    </a>
+                </div>
+
+                <div class="mt-2 pt-2 border-top border-white border-opacity-10">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fs-5 fw-black text-warning" style="font-weight: 900;">${{ p.precio }}</span>
+                        <small class="text-white-50">Stock: {{ p.stock }}</small>
+                    </div>
+                    {% if p.stock > 0 %}
+                    <form action="{% url 'agregar_carrito' p.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="cantidad" value="1">
+                        <button type="submit" class="btn-gta-add w-100">
+                            <i class="bi bi-cart-plus-fill me-1"></i> Llevar al Carrito
+                        </button>
+                    </form>
+                    {% else %}
+                    <button class="btn btn-secondary btn-sm w-100 disabled">Agotado</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 px-3 rounded-4" style="background: rgba(20,13,34,0.9); border: 1px solid rgba(241,82,164,0.35);">
+        <div class="fs-1 mb-2">❤️</div>
+        <h4 class="fw-bold mb-2">Aún no tienes productos en Favoritos</h4>
+        <p class="text-white-50 small mb-4">Pulsa el ícono del corazón en cualquier herramienta del catálogo para guardarla aquí.</p>
+        <a href="{% url 'buscar_productos' %}" class="btn-gta-add text-decoration-none px-4 py-2 d-inline-block">
+            <i class="bi bi-grid-fill me-1"></i> Ir al Catálogo de Productos
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

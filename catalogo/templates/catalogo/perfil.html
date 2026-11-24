@@ -1,0 +1,824 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Ferretería VI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gta-pink: #f152a4;
+            --gta-orange: #f58426;
+            --gta-purple: #2a114b;
+            --gta-teal: #49c4c4;
+            --bg-dark: #0a0a0c;
+        }
+
+        body {
+            background-color: #0a0a0c;
+            color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Imagen principal de fondo difuminada (borrosa) */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -25px;
+            background: url("{% static 'images/hero_gta.jpg' %}") no-repeat center center / cover;
+            filter: blur(20px) brightness(0.42) saturate(1.3);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 14, 0.45) 0%,
+                rgba(20, 13, 34, 0.68) 50%,
+                rgba(35, 16, 60, 0.82) 100%
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ----- Navbar Flotante y Botones GTA VI ----- */
+        .navbar-gta {
+            background: rgba(10, 10, 14, 0.75) !important;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(241, 82, 164, 0.25);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+        }
+
+        .nav-logo-gta {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            filter: drop-shadow(0 0 10px rgba(241, 82, 164, 0.45));
+            transition: transform 0.25s ease;
+        }
+
+        .nav-logo-gta:hover {
+            transform: scale(1.04);
+        }
+
+        .navbar-brand {
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 900;
+            font-style: italic;
+            background: linear-gradient(to right, var(--gta-pink), var(--gta-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 12px rgba(241, 82, 164, 0.35));
+        }
+
+        .user-badge-gta {
+            background: linear-gradient(135deg, rgba(241, 82, 164, 0.28), rgba(245, 132, 38, 0.28));
+            border: 1px solid var(--gta-pink);
+            border-radius: 50px;
+            padding: 5px 14px 5px 8px;
+            font-size: 0.82rem;
+            color: #ffffff !important;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 16px rgba(241, 82, 164, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .nav-avatar-img {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--gta-teal);
+        }
+
+        .admin-tag-mini {
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 20px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .btn-nav-admin {
+            background: rgba(73, 196, 196, 0.1);
+            border: 1px solid rgba(73, 196, 196, 0.4);
+            color: #e0fafa !important;
+            border-radius: 50px;
+            padding: 7px 15px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-admin i {
+            color: var(--gta-teal);
+        }
+
+        .btn-nav-admin:hover {
+            background: linear-gradient(135deg, rgba(73, 196, 196, 0.28), rgba(42, 17, 75, 0.6));
+            border-color: var(--gta-teal);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 0 18px rgba(73, 196, 196, 0.4);
+        }
+
+        .btn-nav-history {
+            background: rgba(241, 82, 164, 0.12);
+            border: 1px solid rgba(241, 82, 164, 0.45);
+            color: #ffd6ec !important;
+            border-radius: 50px;
+            padding: 7px 15px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-history i {
+            color: var(--gta-pink);
+        }
+
+        .btn-nav-history:hover {
+            background: rgba(241, 82, 164, 0.28);
+            border-color: var(--gta-pink);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+
+        .btn-nav-cart {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            border-radius: 50px;
+            padding: 7px 18px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 4px 16px rgba(241, 82, 164, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-cart:hover {
+            background: linear-gradient(135deg, var(--gta-orange) 0%, var(--gta-pink) 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-nav-logout {
+            background: rgba(255, 65, 108, 0.12);
+            border: 1px solid rgba(255, 65, 108, 0.4);
+            color: #ff8da1 !important;
+            border-radius: 50px;
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-nav-logout:hover {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border-color: transparent;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+        }
+
+        /* ----- Contenedor Principal de Perfil ----- */
+        .profile-wrapper {
+            flex: 1;
+            padding: 110px 15px 65px 15px;
+        }
+
+        .page-header-title {
+            font-size: 2.5rem;
+            font-weight: 950;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #ffffff, var(--gta-pink), var(--gta-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .page-header-subtitle {
+            color: var(--gta-teal);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        /* Tarjetas de Perfil */
+        .card-profile-gta {
+            background: linear-gradient(165deg, rgba(35, 22, 52, 0.85) 0%, rgba(14, 11, 24, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 82, 164, 0.32);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(241, 82, 164, 0.15);
+            padding: 35px 30px;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .card-profile-gta::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gta-pink), var(--gta-orange), var(--gta-teal), transparent);
+        }
+
+        /* Avatar Grande con Anillo Neón */
+        .avatar-showcase-ring {
+            width: 145px;
+            height: 145px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange), var(--gta-teal));
+            box-shadow: 0 0 30px rgba(241, 82, 164, 0.45);
+            position: relative;
+        }
+
+        .avatar-inner-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2a114b 0%, #0d0a14 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .avatar-inner-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-default-icon {
+            font-size: 4.5rem;
+            color: var(--gta-teal);
+            filter: drop-shadow(0 0 15px rgba(73, 196, 196, 0.6));
+        }
+
+        /* Secciones e Inputs del Formulario */
+        .section-divider-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--gta-teal);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label-gta {
+            color: #e2e8f0;
+            font-weight: 700;
+            font-size: 0.82rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+            display: block;
+        }
+
+        .input-gta {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(10, 10, 16, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.94rem;
+            transition: all 0.25s ease;
+        }
+
+        .input-gta:focus {
+            background: rgba(16, 12, 28, 0.98);
+            border-color: var(--gta-pink);
+            box-shadow: 0 0 16px rgba(241, 82, 164, 0.4);
+            outline: none;
+            color: #ffffff;
+        }
+
+        .input-file-gta {
+            width: 100%;
+            background: rgba(10, 10, 16, 0.85);
+            border: 1px dashed rgba(73, 196, 196, 0.45);
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: #cbd5e1;
+            font-size: 0.88rem;
+        }
+
+        .input-file-gta::file-selector-button {
+            background: linear-gradient(135deg, var(--gta-teal), #157347);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            padding: 6px 14px;
+            font-weight: 700;
+            margin-right: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .input-file-gta::file-selector-button:hover {
+            background: linear-gradient(135deg, #1aa3a3, var(--gta-teal));
+        }
+
+        .btn-save-profile {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            font-weight: 800;
+            font-size: 0.98rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 12px;
+            padding: 14px 28px;
+            width: 100%;
+            box-shadow: 0 4px 22px rgba(241, 82, 164, 0.45);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .btn-save-profile:hover {
+            background: linear-gradient(135deg, var(--gta-orange) 0%, var(--gta-pink) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(245, 132, 38, 0.6);
+        }
+
+        /* Alertas Neón */
+        .alert-gta-success {
+            background: rgba(73, 196, 196, 0.15);
+            border: 1px solid var(--gta-teal);
+            border-radius: 14px;
+            padding: 14px 18px;
+            color: #e0fafa;
+            font-weight: 600;
+            font-size: 0.92rem;
+            box-shadow: 0 0 20px rgba(73, 196, 196, 0.25);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-gta-error {
+            background: rgba(255, 75, 75, 0.16);
+            border: 1px solid #ff6b6b;
+            border-radius: 14px;
+            padding: 14px 18px;
+            color: #ff9e9e;
+            font-weight: 600;
+            font-size: 0.92rem;
+            box-shadow: 0 0 20px rgba(255, 75, 75, 0.25);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-return {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 9px 18px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-return:hover {
+            background: rgba(241, 82, 164, 0.25);
+            border-color: var(--gta-pink);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* Footer GTA */
+        .footer-gta {
+            background: linear-gradient(180deg, rgba(14, 10, 20, 0.95) 0%, #06050a 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 28px 0;
+            text-align: center;
+        }
+
+        .footer-neon-divider {
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, var(--gta-pink), var(--gta-orange), var(--gta-teal), transparent);
+            box-shadow: 0 0 12px rgba(241, 82, 164, 0.6);
+        }
+
+        /* ----- Buscador Central y Menú de 3 Rayas (Unified Navbar) ----- */
+        .nav-search-form {
+            flex-grow: 1;
+            max-width: 480px;
+            margin: 0 15px;
+        }
+
+        .nav-search-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(15, 11, 26, 0.85);
+            border: 1.5px solid rgba(241, 82, 164, 0.45);
+            border-radius: 50px;
+            padding: 4px 6px 4px 16px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .nav-search-wrapper:focus-within {
+            border-color: var(--gta-teal);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.35), 0 0 12px rgba(241, 82, 164, 0.25);
+        }
+
+        .nav-search-icon {
+            color: var(--gta-pink);
+            font-size: 1rem;
+            margin-right: 8px;
+        }
+
+        .nav-search-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 0.9rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .nav-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        .nav-search-btn {
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+            border: none;
+            color: #ffffff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .nav-search-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 12px rgba(241, 82, 164, 0.65);
+        }
+
+        .btn-nav-hamburger {
+            background: rgba(20, 14, 34, 0.85);
+            border: 1.5px solid rgba(241, 82, 164, 0.55);
+            color: #ffffff;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-nav-hamburger:hover,
+        .btn-nav-hamburger[aria-expanded="true"] {
+            background: rgba(241, 82, 164, 0.22);
+            border-color: var(--gta-teal);
+            color: var(--gta-teal);
+            box-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+        }
+
+        .gta-nav-collapse-panel {
+            background: rgba(14, 10, 24, 0.96);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(241, 82, 164, 0.35);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-top: 10px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 20px rgba(241, 82, 164, 0.18);
+        }
+
+        #gtaNavMenuPanel.is-open {
+            display: block !important;
+        }
+
+        @media (max-width: 768px) {
+            .profile-wrapper {
+                padding: 95px 10px 45px;
+            }
+            .page-header-title {
+                font-size: 1.5rem;
+            }
+            .nav-logo-gta {
+                height: 34px;
+            }
+            .nav-search-form {
+                order: 3;
+                width: 100%;
+                max-width: 100%;
+                margin: 8px 0 0 0;
+            }
+            .user-badge-gta {
+                padding: 4px 10px 4px 6px;
+                font-size: 0.76rem;
+            }
+            .profile-card {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Flotante GTA VI -->
+    {% include 'catalogo/includes/navbar.html' %}
+
+    <!-- Contenedor Principal de Perfil -->
+    <div class="profile-wrapper">
+        <div class="container" style="max-width: 960px;">
+            
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-header-title">👤 Mi Perfil Táctico</h1>
+                    <div class="page-header-subtitle">Personalización de Cuenta, Foto & Seguridad</div>
+                </div>
+                <a href="{% url 'buscar_productos' %}" class="btn-return mb-3 mb-sm-0">
+                    <i class="bi bi-bag-plus-fill"></i> Seguir Comprando / Catálogo
+                </a>
+            </div>
+
+            {% if mensaje_exito %}
+            <div class="alert-gta-success">
+                <i class="bi bi-check-circle-fill fs-4 text-info"></i>
+                <div>{{ mensaje_exito }}</div>
+            </div>
+            {% endif %}
+
+            {% if mensaje_error %}
+            <div class="alert-gta-error">
+                <i class="bi bi-exclamation-triangle-fill fs-4 text-danger"></i>
+                <div>{{ mensaje_error }}</div>
+            </div>
+            {% endif %}
+
+            <div class="row g-4">
+                <!-- Columna Izquierda: Tarjeta de Resumen e Identidad Visual -->
+                <div class="col-lg-4">
+                    <div class="card-profile-gta text-center d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="avatar-showcase-ring">
+                                <div class="avatar-inner-circle" id="avatarPreviewContainer">
+                                    {% if perfil.avatar_url %}
+                                        <img src="{{ perfil.avatar_url }}" alt="{{ user.username }}" id="avatarPreviewImg">
+                                    {% else %}
+                                        <i class="bi bi-person-fill avatar-default-icon" id="avatarDefaultIcon"></i>
+                                        <img src="" alt="Preview" id="avatarPreviewImg" style="display: none;">
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <h3 class="fw-bold text-white mb-1" id="usernamePreviewText">{{ user.username }}</h3>
+                            <div class="mb-3">
+                                {% if user.is_superuser %}
+                                    <span class="admin-tag-mini py-1 px-3" style="font-size: 0.72rem;">⚡ Superusuario / Admin</span>
+                                {% else %}
+                                    <span class="badge rounded-pill" style="background: rgba(73,196,196,0.15); border: 1px solid rgba(73,196,196,0.4); color: var(--gta-teal);">
+                                        🌴 Cliente Vice City
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <p class="text-white-50 small px-2 mb-4">
+                                Personaliza tu foto de perfil mediante un enlace URL o subiendo una imagen descargada en tu equipo.
+                            </p>
+                        </div>
+
+                        {% if not user.is_superuser %}
+                        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+                            <div class="text-white-50 small mb-1">Compras Registradas</div>
+                            <div class="fs-3 fw-bold mb-2" style="color: var(--gta-orange);">{{ total_compras }}</div>
+                            <a href="{% url 'historial_compras' %}" class="btn-nav-admin w-100 justify-content-center py-2">
+                                <i class="bi bi-clock-history"></i> Ver Mis Compras
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="p-3 rounded-4" style="background: rgba(73,196,196,0.08); border: 1px solid rgba(73,196,196,0.35);">
+                            <div class="text-info small mb-1 fw-bold"><i class="bi bi-shield-check me-1"></i> Rango Administrativo</div>
+                            <div class="small text-white-50 mb-3">Gestión de inventario, stock crítico y métricas de ventas.</div>
+                            <a href="{% url 'panel_admin' %}" class="btn btn-info w-100 text-dark fw-bold justify-content-center py-2 rounded-pill">
+                                <i class="bi bi-graph-up-arrow me-1"></i> Dashboard Admin
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Formulario de Edición de Perfil -->
+                <div class="col-lg-8">
+                    <div class="card-profile-gta">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <!-- 1. Nombre de Usuario -->
+                            <div class="section-divider-title">
+                                <i class="bi bi-person-vcard-fill"></i> 1. Identidad de Usuario
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label-gta" for="id_username">Nombre de Usuario</label>
+                                <input type="text" name="username" id="id_username" class="input-gta" value="{{ user.username }}" required>
+                            </div>
+
+                            <!-- 2. Foto de Perfil (Por URL o Imagen Descargada) -->
+                            <div class="section-divider-title">
+                                <i class="bi bi-camera-fill"></i> 2. Foto de Perfil (URL o Imagen Descargada)
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-gta" for="id_foto_archivo">
+                                        <i class="bi bi-upload text-info me-1"></i> Subir Imagen Descargada
+                                    </label>
+                                    <input type="file" name="foto" id="id_foto_archivo" class="input-file-gta" accept="image/*">
+                                    <small class="text-white-50 d-block mt-1" style="font-size: 0.75rem;">
+                                        Selecciona un archivo JPG, PNG o WebP desde tu computadora.
+                                    </small>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label-gta" for="id_foto_url">
+                                        <i class="bi bi-link-45deg text-warning me-1"></i> O Pegar URL de Imagen
+                                    </label>
+                                    <input type="url" name="foto_url" id="id_foto_url" class="input-gta" value="{{ perfil.foto_url|default:'' }}" placeholder="https://ejemplo.com/avatar.jpg">
+                                    <small class="text-white-50 d-block mt-1" style="font-size: 0.75rem;">
+                                        Pega la dirección web directa de cualquier imagen de internet.
+                                    </small>
+                                </div>
+                            </div>
+
+                            {% if perfil.avatar_url %}
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" name="quitar_foto" value="1" id="id_quitar_foto">
+                                <label class="form-check-label text-white-50 small" for="id_quitar_foto">
+                                    Quitar foto actual y volver al icono por defecto
+                                </label>
+                            </div>
+                            {% endif %}
+
+                            <!-- 3. Cambiar Contraseña -->
+                            <div class="section-divider-title mt-4">
+                                <i class="bi bi-shield-lock-fill"></i> 3. Cambiar Contraseña (Opcional)
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label-gta" for="id_nueva_password">Nueva Contraseña</label>
+                                    <input type="password" name="nueva_password" id="id_nueva_password" class="input-gta" placeholder="Dejar vacío para no cambiar">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-gta" for="id_confirmar_password">Confirmar Nueva Contraseña</label>
+                                    <input type="password" name="confirmar_password" id="id_confirmar_password" class="input-gta" placeholder="Repite la nueva contraseña">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-save-profile">
+                                <i class="bi bi-floppy-fill me-2"></i> Guardar Cambios en Mi Perfil
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Neón -->
+    <div class="footer-neon-divider"></div>
+    <footer class="footer-gta">
+        <div class="container">
+            <span class="small text-white-50">© 2026 <strong>Ferretería VI</strong> — Gestión de Perfil Estilo Vice City.</span>
+        </div>
+    </footer>
+
+    <!-- Script de Previsualización en Vivo de Avatar y Nombre -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const fileInput = document.getElementById("id_foto_archivo");
+            const urlInput = document.getElementById("id_foto_url");
+            const usernameInput = document.getElementById("id_username");
+            const previewImg = document.getElementById("avatarPreviewImg");
+            const defaultIcon = document.getElementById("avatarDefaultIcon");
+            const usernamePreview = document.getElementById("usernamePreviewText");
+
+            function showAvatarImage(src) {
+                if (previewImg && src) {
+                    previewImg.src = src;
+                    previewImg.style.display = "block";
+                    if (defaultIcon) defaultIcon.style.display = "none";
+                }
+            }
+
+            if (fileInput) {
+                fileInput.addEventListener("change", function() {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            showAvatarImage(e.target.result);
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+            }
+
+            if (urlInput) {
+                urlInput.addEventListener("input", function() {
+                    const urlVal = this.value.trim();
+                    if (urlVal.startsWith("http://") || urlVal.startsWith("https://")) {
+                        showAvatarImage(urlVal);
+                    }
+                });
+            }
+
+            if (usernameInput && usernamePreview) {
+                usernameInput.addEventListener("input", function() {
+                    usernamePreview.textContent = this.value.trim() || "{{ user.username }}";
+                });
+            }
+
+
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'catalogo/includes/autocompletado_widget.html' %}
+</body>
+</html>
+

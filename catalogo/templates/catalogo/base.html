@@ -1,0 +1,312 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ferreterías VI{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gta-pink: #f152a4;
+            --gta-orange: #f58426;
+            --gta-purple: #2b1055;
+            --gta-teal: #49c4c4;
+            --gta-yellow: #fff685;
+            --gta-dark: #0a0a0e;
+        }
+
+        body {
+            background-color: var(--gta-dark);
+            background-image: url("{% static 'images/hero_gta.jpg' %}"), linear-gradient(135deg, #1b0a2e 0%, #3b1254 50%, #6e2260 100%);
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 8, 16, 0.72) 0%,
+                rgba(18, 11, 30, 0.85) 55%,
+                rgba(12, 8, 22, 0.94) 100%
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .navbar-gta {
+            background: rgba(12, 9, 20, 0.92) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(241, 82, 164, 0.3);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.65);
+            z-index: 1050;
+            padding: 8px 0;
+        }
+
+        .navbar-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .nav-logo-gta {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(241, 82, 164, 0.5));
+            transition: transform 0.25s ease;
+        }
+
+        .nav-logo-gta:hover {
+            transform: scale(1.05);
+        }
+
+        .ml-search-form {
+            flex-grow: 1;
+            max-width: 560px;
+        }
+
+        .ml-search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(20, 14, 34, 0.92);
+            border: 1.5px solid rgba(241, 82, 164, 0.45);
+            border-radius: 50px;
+            padding: 3px 5px 3px 16px;
+            transition: all 0.25s ease;
+        }
+
+        .ml-search-box:focus-within {
+            border-color: var(--gta-teal);
+            box-shadow: 0 0 18px rgba(73, 196, 196, 0.35);
+        }
+
+        .ml-search-input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 0.9rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .ml-search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .ml-search-btn {
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+            border: none;
+            color: #ffffff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .user-badge-gta {
+            background: linear-gradient(135deg, rgba(241, 82, 164, 0.2), rgba(245, 132, 38, 0.2));
+            border: 1px solid rgba(241, 82, 164, 0.5);
+            border-radius: 50px;
+            padding: 5px 14px 5px 8px;
+            font-size: 0.82rem;
+            color: #ffffff !important;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.25s ease;
+        }
+
+        .user-badge-gta:hover {
+            border-color: var(--gta-teal);
+            box-shadow: 0 0 15px rgba(73, 196, 196, 0.4);
+        }
+
+        .nav-avatar-img {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--gta-teal);
+        }
+
+        .admin-tag-mini {
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .btn-hamburger-gta {
+            background: rgba(25, 16, 42, 0.9);
+            border: 1.5px solid rgba(241, 82, 164, 0.55);
+            color: #ffffff;
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-hamburger-gta:hover {
+            border-color: var(--gta-teal);
+            box-shadow: 0 0 14px rgba(73, 196, 196, 0.4);
+        }
+
+        .cart-badge-count {
+            background: var(--gta-yellow);
+            color: #09060e;
+            font-weight: 900;
+            font-size: 0.7rem;
+            padding: 1px 7px;
+            border-radius: 50px;
+        }
+
+        .gta-collapse-panel {
+            margin-top: 10px;
+            background: rgba(14, 10, 24, 0.97);
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            border-radius: 16px;
+            padding: 14px 16px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        #gtaNavMenuPanel.is-open {
+            display: block !important;
+        }
+
+        .gta-menu-section-label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 8px;
+        }
+
+        .gta-menu-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+            gap: 8px;
+        }
+
+        .gta-menu-item-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 13px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .gta-menu-item-btn:hover {
+            background: rgba(241, 82, 164, 0.16);
+            border-color: var(--gta-pink);
+            transform: translateY(-1px);
+        }
+
+        .main-page-wrapper {
+            padding: 100px 0 60px;
+            flex: 1;
+        }
+
+        .footer-gta {
+            background: rgba(10, 8, 16, 0.94);
+            border-top: 1px solid rgba(241, 82, 164, 0.25);
+            padding: 22px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top-row {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .nav-logo-gta {
+                height: 34px;
+            }
+            .ml-search-form {
+                order: 3;
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+            .main-page-wrapper {
+                padding-top: 130px;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Navbar Compartida Vice City -->
+    {% include 'catalogo/includes/navbar.html' %}
+
+    <main class="main-page-wrapper">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer-gta" id="mainGtaFooter">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 mb-2">
+                <a href="{% url 'reporte_categorias' %}" class="text-decoration-none small text-white-50">
+                    <i class="bi bi-pie-chart me-1 text-info"></i> Reporte por Categorías
+                </a>
+                <span class="text-white-50 small">•</span>
+                <a href="{% url 'reporte_stock_critico' %}" class="text-decoration-none small text-white-50">
+                    <i class="bi bi-shield-exclamation me-1 text-warning"></i> Stock Crítico
+                </a>
+                <span class="text-white-50 small">•</span>
+                <a href="{% url 'contacto_cliente' %}" class="text-decoration-none small text-white-50">
+                    <i class="bi bi-envelope me-1 text-info"></i> Contacto y Consultas
+                </a>
+                <span class="text-white-50 small">•</span>
+                <a href="{% url 'buscar_productos' %}" class="text-decoration-none small text-white-50">
+                    Catálogo
+                </a>
+            </div>
+            <span class="small text-white-50">© 2026 <strong>Ferreterías VI</strong> — Todos los derechos reservados. Estilo Vice City.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% include 'catalogo/includes/autocompletado_widget.html' %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

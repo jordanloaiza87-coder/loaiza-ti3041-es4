@@ -1,0 +1,199 @@
+{% extends 'catalogo/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Ejecutivo Admin - Ferreterías VI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .kpi-card-gta {
+        background: linear-gradient(155deg, rgba(24, 15, 42, 0.94) 0%, rgba(12, 9, 22, 0.97) 100%);
+        border: 1.5px solid rgba(241, 82, 164, 0.35);
+        border-radius: 20px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+    }
+
+    .kpi-value {
+        font-size: 1.9rem;
+        font-weight: 900;
+        color: var(--gta-yellow);
+    }
+
+    .panel-section-card {
+        background: rgba(16, 11, 28, 0.94);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    .stock-low-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: rgba(255, 75, 75, 0.08);
+        border: 1px solid rgba(255, 75, 75, 0.3);
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+        <div>
+            <h1 class="fw-black m-0" style="font-weight: 900; font-size: 2rem;">📊 Panel Ejecutivo Vice City</h1>
+            <div class="text-white-50 small">Estadísticas de Ventas, Control de Stock Bajo y Boletas Emitidas</div>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'gestion_despachos' %}" class="btn btn-warning rounded-pill px-3 fw-bold btn-sm text-dark">
+                <i class="bi bi-truck me-1"></i> Gestión de Despachos
+            </a>
+            <a href="{% url 'agregar_producto' %}" class="btn btn-info rounded-pill px-3 fw-bold btn-sm text-dark">
+                <i class="bi bi-plus-circle-fill me-1"></i> Nuevo Producto
+            </a>
+            <a href="{% url 'buscar_productos' %}" class="btn btn-outline-light rounded-pill px-3 fw-bold btn-sm">
+                <i class="bi bi-grid-fill me-1"></i> Ver Catálogo
+            </a>
+        </div>
+    </div>
+
+    {% if mensaje_stock %}
+    <div class="alert alert-info d-flex align-items-center gap-2 rounded-4 mb-4">
+        <i class="bi bi-check-circle-fill fs-5"></i>
+        <strong>{{ mensaje_stock }}</strong>
+    </div>
+    {% endif %}
+
+    <!-- Tarjetas KPI de Resumen -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="kpi-card-gta">
+                <div class="text-white-50 small text-uppercase fw-bold">Ingresos Totales</div>
+                <div class="kpi-value">${{ total_ingresos }}</div>
+                <div class="small text-info"><i class="bi bi-cash-stack me-1"></i> Ventas acumuladas</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="kpi-card-gta">
+                <div class="text-white-50 small text-uppercase fw-bold">Pedidos Realizados</div>
+                <div class="kpi-value text-info">{{ total_pedidos }}</div>
+                <div class="small text-white-50">Ticket Promedio: <strong>${{ ticket_promedio }}</strong></div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="kpi-card-gta">
+                <div class="text-white-50 small text-uppercase fw-bold">Clientes Activos</div>
+                <div class="kpi-value text-white">{{ total_clientes }}</div>
+                <div class="small text-warning"><i class="bi bi-people-fill me-1"></i> Cuentas registradas</div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="kpi-card-gta" style="border-color: rgba(255,75,75,0.5);">
+                <div class="text-white-50 small text-uppercase fw-bold">Alerta Stock Crítico</div>
+                <div class="kpi-value text-danger">{{ productos_stock_bajo|length }}</div>
+                <div class="small text-danger">{{ productos_agotados_count }} agotados de {{ total_productos }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Columna Izquierda: Alerta de Stock Bajo + Reposición en 1 Clic -->
+        <div class="col-lg-6">
+            <div class="panel-section-card h-100">
+                <h5 class="fw-bold mb-3 text-warning">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Alerta de Stock Bajo (≤ 5 unidades)
+                </h5>
+
+                {% for p in productos_stock_bajo %}
+                <div class="stock-low-row">
+                    <div>
+                        <a href="{% url 'detalle_producto' p.id %}" class="fw-bold text-white text-decoration-none">{{ p.nombre }}</a>
+                        <div class="small text-white-50">{{ p.categoria }} • Precio: ${{ p.precio }}</div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge {% if p.stock == 0 %}bg-danger{% else %}bg-warning text-dark{% endif %} px-2 py-1">
+                            Stock: {{ p.stock }}
+                        </span>
+                        <form action="{% url 'reponer_stock' p.id %}" method="post" class="d-flex align-items-center gap-1 m-0">
+                            {% csrf_token %}
+                            <input type="number" name="cantidad" value="10" min="1" max="500" class="form-control form-control-sm bg-dark text-white border-secondary text-center fw-bold" style="width: 64px;">
+                            <button type="submit" class="btn btn-sm btn-info fw-bold text-dark">
+                                + Reponer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-4 text-center text-info rounded-4" style="background: rgba(73,196,196,0.08);">
+                    <i class="bi bi-shield-check fs-2 d-block mb-1"></i>
+                    ¡Todo el inventario cuenta con stock saludable (> 5 unidades)!
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Top Productos Más Vendidos -->
+        <div class="col-lg-6">
+            <div class="panel-section-card h-100">
+                <h5 class="fw-bold mb-3 text-info">
+                    <i class="bi bi-trophy-fill me-1"></i> Ranking de Herramientas Más Vendidas
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0">
+                        <thead>
+                            <tr class="text-white-50 small text-uppercase">
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th class="text-center">Unidades Vendidas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in ventas_agrupadas %}
+                            <tr>
+                                <td class="fw-bold">{{ v.nombre_producto }}</td>
+                                <td><span class="badge bg-dark border border-secondary">{{ v.categoria_producto|default:"General" }}</span></td>
+                                <td class="text-center"><span class="badge bg-info text-dark fw-bold px-3">{{ v.unidades }} uds.</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-white-50 py-3">Aún no se registran ventas.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acceso Directo al Módulo Independiente de Despachos -->
+        <div class="col-12 mt-2">
+            <div class="p-4 rounded-4" style="background: linear-gradient(135deg, rgba(30, 16, 48, 0.95) 0%, rgba(12, 10, 22, 0.98) 100%); border: 1.5px solid rgba(73, 196, 196, 0.45); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fs-1 text-warning p-3 rounded-4" style="background: rgba(245, 132, 38, 0.15); border: 1px solid rgba(245, 132, 38, 0.35);">
+                            🚚
+                        </div>
+                        <div>
+                            <span class="badge bg-warning text-dark fw-bold px-2 py-1 mb-1" style="font-size: 0.68rem;">MÓDULO DEDICADO</span>
+                            <h4 class="fw-bold text-white mb-1">Centro de Gestión de Despachos y Envíos</h4>
+                            <p class="text-white-50 small mb-0">
+                                Página independiente para supervisar despachos a domicilio, retiros en tienda y actualización de estados sin recargar.
+                            </p>
+                        </div>
+                    </div>
+                    <a href="{% url 'gestion_despachos' %}" class="btn btn-warning rounded-pill px-4 py-2 fw-black text-dark text-uppercase" style="letter-spacing: 0.5px; font-weight: 800;">
+                        <i class="bi bi-box-arrow-up-right me-2"></i> Abrir Gestión de Despachos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

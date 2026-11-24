@@ -1,0 +1,536 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Ferretería VI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gta-pink: #f152a4;
+            --gta-orange: #f58426;
+            --gta-purple: #2a114b;
+            --gta-teal: #49c4c4;
+            --bg-dark: #0a0a0c;
+        }
+
+        body {
+            background-color: #0a0a0c;
+            color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Imagen principal de fondo difuminada (borrosa) */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -25px;
+            background: url("{% static 'images/hero_gta.jpg' %}") no-repeat center center / cover;
+            filter: blur(20px) brightness(0.42) saturate(1.3);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 14, 0.45) 0%,
+                rgba(20, 13, 34, 0.68) 50%,
+                rgba(35, 16, 60, 0.82) 100%
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Navbar flotante */
+        .navbar-gta {
+            background: rgba(10, 10, 12, 0.75) !important;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(241, 82, 164, 0.25);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+        }
+
+        .nav-logo-gta {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            filter: drop-shadow(0 0 10px rgba(241, 82, 164, 0.45));
+            transition: transform 0.25s ease;
+        }
+
+        .nav-logo-gta:hover {
+            transform: scale(1.04);
+        }
+
+        .navbar-brand {
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 900;
+            font-style: italic;
+            background: linear-gradient(to right, var(--gta-pink), var(--gta-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 12px rgba(241, 82, 164, 0.35));
+        }
+
+        .btn-nav-cart {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            border-radius: 50px;
+            padding: 7px 18px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 4px 16px rgba(241, 82, 164, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-cart:hover {
+            background: linear-gradient(135deg, var(--gta-orange) 0%, var(--gta-pink) 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-nav-catalog {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff !important;
+            border-radius: 50px;
+            padding: 7px 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-catalog:hover {
+            background: rgba(241, 82, 164, 0.25);
+            border-color: var(--gta-pink);
+            transform: translateY(-2px);
+        }
+
+        .auth-tabs-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: rgba(10, 8, 18, 0.75);
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 22px;
+        }
+
+        .auth-tab-link {
+            padding: 9px 12px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.65);
+            transition: all 0.22s ease;
+            text-align: center;
+        }
+
+        .auth-tab-link.active {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(241, 82, 164, 0.4);
+        }
+
+        .auth-tab-link:not(.active):hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .reset-success-box {
+            background: rgba(25, 135, 84, 0.2);
+            border: 1px solid rgba(73, 196, 196, 0.55);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: #d1fae5;
+            font-size: 0.83rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .forgot-pwd-link {
+            color: var(--gta-teal);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-pwd-link:hover {
+            color: var(--gta-pink);
+            text-decoration: underline;
+        }
+
+        .btn-register-cta {
+            display: block;
+            width: 100%;
+            padding: 11px;
+            border-radius: 12px;
+            background: rgba(73, 196, 196, 0.12);
+            border: 1px solid rgba(73, 196, 196, 0.45);
+            color: #e0fafa !important;
+            font-weight: 800;
+            font-size: 0.84rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            margin-top: 10px;
+        }
+
+        .btn-register-cta:hover {
+            background: rgba(73, 196, 196, 0.25);
+            border-color: var(--gta-teal);
+            transform: translateY(-2px);
+        }
+
+        /* Tarjeta Glassmorphism de Autenticación */
+        .auth-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 110px 15px 50px 15px;
+        }
+
+        .card-auth {
+            background: linear-gradient(165deg, rgba(35, 22, 52, 0.82) 0%, rgba(14, 11, 24, 0.94) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 82, 164, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(241, 82, 164, 0.2);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-auth::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gta-pink), var(--gta-orange), transparent);
+            box-shadow: 0 0 15px rgba(241, 82, 164, 0.8);
+        }
+
+        .auth-icon-badge {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(241, 82, 164, 0.25) 0%, rgba(10, 10, 15, 0.8) 100%);
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 0 25px rgba(241, 82, 164, 0.35);
+            margin-bottom: 18px;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #ffffff, var(--gta-pink), var(--gta-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .auth-subtitle {
+            color: var(--gta-teal);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .saved-cart-notice {
+            background: rgba(73, 196, 196, 0.12);
+            border: 1px solid rgba(73, 196, 196, 0.4);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: #e0fafa;
+            font-size: 0.83rem;
+            margin-bottom: 20px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .saved-cart-notice i {
+            font-size: 1.4rem;
+            color: var(--gta-teal);
+        }
+
+        /* Estilización de formularios Django */
+        .card-auth form p {
+            margin-bottom: 16px;
+        }
+
+        .card-auth form label {
+            color: #e2e8f0;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .card-auth input[type="text"], 
+        .card-auth input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(10, 10, 16, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-sizing: border-box;
+        }
+
+        .card-auth input[type="text"]:focus, 
+        .card-auth input[type="password"]:focus {
+            background: rgba(16, 12, 28, 0.98);
+            border-color: var(--gta-pink);
+            box-shadow: 0 0 16px rgba(241, 82, 164, 0.45);
+            outline: none;
+            color: #ffffff;
+        }
+
+        ul.errorlist {
+            list-style: none;
+            padding: 10px 14px;
+            margin-bottom: 15px;
+            background: rgba(255, 75, 75, 0.15);
+            border: 1px solid rgba(255, 75, 75, 0.45);
+            border-radius: 10px;
+            color: #ff8b8b;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .btn-gta-submit {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 12px;
+            padding: 13px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(241, 82, 164, 0.45);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .btn-gta-submit:hover {
+            background: linear-gradient(135deg, var(--gta-orange) 0%, var(--gta-pink) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 26px rgba(245, 132, 38, 0.6);
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-link:hover {
+            color: var(--gta-teal);
+            transform: translateX(-4px);
+        }
+
+        /* Footer GTA */
+        .footer-gta {
+            background: linear-gradient(180deg, rgba(14, 10, 20, 0.95) 0%, #06050a 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 25px 0;
+            text-align: center;
+        }
+
+        .footer-neon-divider {
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, var(--gta-pink), var(--gta-orange), var(--gta-teal), transparent);
+            box-shadow: 0 0 12px rgba(241, 82, 164, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 90px 12px 40px;
+            }
+            .card-auth {
+                padding: 28px 18px;
+                border-radius: 20px;
+            }
+            .auth-title {
+                font-size: 1.65rem;
+            }
+            .nav-logo-gta {
+                height: 34px;
+            }
+            .auth-tab-link {
+                font-size: 0.78rem;
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-gta fixed-top">
+        <div class="container py-2">
+            <a class="navbar-brand p-0 m-0 d-flex align-items-center" href="{% url 'inicio' %}" title="Ir al Inicio Principal">
+                <img src="{% static 'images/logo_ferreteria_vi.png' %}" alt="Ferretería VI Logo" class="nav-logo-gta">
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="{% url 'ver_carrito' %}" class="btn-nav-cart">
+                    <i class="bi bi-cart3"></i>
+                    <span>Carrito</span>
+                </a>
+                <a href="{% url 'buscar_productos' %}" class="btn-nav-catalog">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Catálogo</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal de Autenticación -->
+    <div class="auth-container">
+        <div class="card-auth text-center">
+
+            <!-- Pestañas del Menú: Iniciar Sesión / Registrarse -->
+            <div class="auth-tabs-bar">
+                <a href="{% url 'login' %}" class="auth-tab-link active">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+                </a>
+                <a href="{% url 'registrar_usuario' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" class="auth-tab-link">
+                    <i class="bi bi-person-plus-fill me-1"></i> Registrarse
+                </a>
+            </div>
+            
+            <div class="auth-icon-badge">
+                <i class="bi bi-shield-lock-fill text-warning"></i>
+            </div>
+            
+            <h1 class="auth-title">Iniciar Sesión</h1>
+            <h6 class="auth-subtitle">Acceso Táctico Vice City</h6>
+
+            {% if request.GET.reset == 'ok' %}
+            <div class="reset-success-box">
+                <i class="bi bi-check-circle-fill fs-4 text-info"></i>
+                <div>
+                    <strong>¡Contraseña actualizada con éxito!</strong><br>
+                    Ya puedes iniciar sesión con tu nueva clave.
+                </div>
+            </div>
+            {% endif %}
+
+            {% if request.GET.next or request.session.carrito_invitado %}
+            <div class="saved-cart-notice">
+                <i class="bi bi-cart-check-fill"></i>
+                <div>
+                    <strong>¡Tu carrito está guardado!</strong><br>
+                    Inicia sesión o regístrate y te llevaremos directo a tu carrito para confirmar tu compra.
+                </div>
+            </div>
+            {% endif %}
+            
+            <form method="post" class="text-start">
+                {% csrf_token %}
+                {% if request.GET.next %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                {% endif %}
+                {{ form.as_p }}
+
+                <div class="d-flex justify-content-end mb-2">
+                    <a href="{% url 'recuperar_password' %}" class="forgot-pwd-link">
+                        <i class="bi bi-envelope-at-fill me-1"></i> ¿Olvidaste tu contraseña? Recupérala con Gmail
+                    </a>
+                </div>
+
+                <button type="submit" class="btn-gta-submit">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Entrar y Continuar
+                </button>
+            </form>
+            
+            <div class="text-center mt-4 pt-3 border-top border-white border-opacity-10">
+                <a href="{% url 'buscar_productos' %}" class="back-link">
+                    <i class="bi bi-grid-fill"></i> Ir al Catálogo de Productos
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Neón -->
+    <div class="footer-neon-divider"></div>
+    <footer class="footer-gta">
+        <div class="container">
+            <span class="small text-white-50">© 2026 <strong>Ferretería VI</strong> — Acceso Seguro con estilo Vice City.</span>
+        </div>
+    </footer>
+
+</body>
+</html>

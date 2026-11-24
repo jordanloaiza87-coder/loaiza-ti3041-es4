@@ -1,0 +1,400 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar Producto - Ferretería VI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gta-pink: #f152a4;
+            --gta-orange: #f58426;
+            --gta-purple: #2a114b;
+            --gta-teal: #49c4c4;
+            --bg-dark: #0a0a0c;
+        }
+
+        body {
+            background-color: #0a0a0c;
+            color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Imagen principal de fondo difuminada (borrosa) */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -25px;
+            background: url("{% static 'images/hero_gta.jpg' %}") no-repeat center center / cover;
+            filter: blur(20px) brightness(0.42) saturate(1.3);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 14, 0.45) 0%,
+                rgba(30, 10, 22, 0.68) 50%,
+                rgba(45, 12, 30, 0.82) 100%
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ----- Navbar Flotante y Botones GTA VI ----- */
+        .navbar-gta {
+            background: rgba(10, 10, 14, 0.75) !important;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(241, 82, 164, 0.25);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+        }
+
+        .nav-logo-gta {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            filter: drop-shadow(0 0 10px rgba(241, 82, 164, 0.45));
+            transition: transform 0.25s ease;
+        }
+
+        .nav-logo-gta:hover {
+            transform: scale(1.04);
+        }
+
+        .navbar-brand {
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 900;
+            font-style: italic;
+            background: linear-gradient(to right, var(--gta-pink), var(--gta-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 12px rgba(241, 82, 164, 0.35));
+        }
+
+        .user-badge-gta {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 50px;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            color: #e2e8f0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-badge-gta i {
+            color: var(--gta-teal);
+            font-size: 0.95rem;
+        }
+
+        .admin-tag-mini {
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 20px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .btn-nav-admin {
+            background: rgba(73, 196, 196, 0.1);
+            border: 1px solid rgba(73, 196, 196, 0.4);
+            color: #e0fafa !important;
+            border-radius: 50px;
+            padding: 7px 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .btn-nav-admin:hover {
+            background: linear-gradient(135deg, rgba(73, 196, 196, 0.28), rgba(42, 17, 75, 0.6));
+            border-color: var(--gta-teal);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 0 18px rgba(73, 196, 196, 0.4);
+        }
+
+        .btn-nav-cart {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            border-radius: 50px;
+            padding: 7px 18px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 4px 16px rgba(241, 82, 164, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-cart:hover {
+            background: linear-gradient(135deg, var(--gta-orange) 0%, var(--gta-pink) 100%);
+            transform: translateY(-2px);
+        }
+
+        /* Contenedor Principal */
+        .delete-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 110px 15px 60px 15px;
+        }
+
+        .card-gta-delete {
+            background: linear-gradient(165deg, rgba(45, 18, 30, 0.85) 0%, rgba(16, 10, 20, 0.94) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 75, 75, 0.4);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(255, 75, 75, 0.25);
+            width: 100%;
+            max-width: 480px;
+            padding: 42px 32px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card-gta-delete::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ff416c, #ff4b2b, transparent);
+            box-shadow: 0 0 15px rgba(255, 65, 108, 0.8);
+        }
+
+        .delete-icon-badge {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 75, 75, 0.3) 0%, rgba(15, 10, 20, 0.85) 100%);
+            border: 1px solid rgba(255, 75, 75, 0.5);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #ff4b4b;
+            box-shadow: 0 0 25px rgba(255, 75, 75, 0.4);
+            margin-bottom: 20px;
+            animation: pulseWarning 2s infinite;
+        }
+
+        @keyframes pulseWarning {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); box-shadow: 0 0 35px rgba(255, 75, 75, 0.6); }
+        }
+
+        .delete-title {
+            font-size: 2rem;
+            font-weight: 950;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #ffffff, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .delete-subtitle {
+            color: var(--gta-orange);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .delete-target-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 22px;
+        }
+
+        .btn-confirm-delete {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            border: none;
+            color: #ffffff !important;
+            font-weight: 800;
+            font-size: 0.95rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 12px;
+            padding: 13px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(255, 65, 108, 0.45);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .btn-confirm-delete:hover {
+            background: linear-gradient(135deg, #ff4b2b 0%, #ff416c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 26px rgba(255, 75, 43, 0.6);
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-link:hover {
+            color: var(--gta-teal);
+            transform: translateX(-4px);
+        }
+
+        /* Footer GTA */
+        .footer-gta {
+            background: linear-gradient(180deg, rgba(14, 10, 20, 0.95) 0%, #06050a 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 25px 0;
+            text-align: center;
+        }
+
+        .footer-neon-divider {
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, #ff416c, var(--gta-orange), transparent);
+            box-shadow: 0 0 12px rgba(255, 65, 108, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .delete-container {
+                padding: 90px 12px 40px;
+            }
+            .card-gta-delete {
+                padding: 26px 18px;
+                border-radius: 20px;
+            }
+            .delete-title {
+                font-size: 1.5rem;
+            }
+            .nav-logo-gta {
+                height: 34px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar GTA VI -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-gta fixed-top">
+        <div class="container py-2">
+            <a class="navbar-brand p-0 m-0 d-flex align-items-center" href="{% url 'inicio' %}" title="Ir al Inicio Principal">
+                <img src="{% static 'images/logo_ferreteria_vi.png' %}" alt="Ferretería VI Logo" class="nav-logo-gta">
+            </a>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'mi_perfil' %}" class="user-badge-gta me-1 text-decoration-none" title="Ir a Mi Perfil">
+                        {% if user.perfil.avatar_url %}
+                            <img src="{{ user.perfil.avatar_url }}" alt="{{ user.username }}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gta-teal);">
+                        {% else %}
+                            <i class="bi bi-person-circle"></i>
+                        {% endif %}
+                        <span class="d-none d-sm-inline">Hola, <strong>{{ user.username }}</strong></span>
+                        {% if user.is_superuser %}
+                            <span class="admin-tag-mini">Admin</span>
+                        {% endif %}
+                    </a>
+                {% endif %}
+                <a href="{% url 'buscar_productos' %}" class="btn-nav-cart">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Catálogo</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor Principal -->
+    <div class="delete-container">
+        <div class="card-gta-delete">
+            
+            <div class="delete-icon-badge">
+                <i class="bi bi-trash3-fill"></i>
+            </div>
+            
+            <h1 class="delete-title">¿Eliminar Producto?</h1>
+            <h6 class="delete-subtitle">Zona de Peligro Administrativa</h6>
+            
+            <div class="delete-target-box">
+                <div class="text-white-50 small mb-1">Producto a remover:</div>
+                <h4 class="fw-bold text-white mb-0">{{ producto.nombre }}</h4>
+            </div>
+
+            <p class="text-white-50 small mb-4" style="line-height: 1.6;">
+                ¿Estás seguro de que deseas eliminar permanentemente este producto de la base de datos de <strong>Ferretería VI</strong>? Esta acción no se puede deshacer.
+            </p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn-confirm-delete">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Sí, Eliminar Definitivamente
+                </button>
+            </form>
+            
+            <div class="text-center pt-2 border-top border-white border-opacity-10">
+                <a href="{% url 'buscar_productos' %}" class="back-link">
+                    <i class="bi bi-arrow-left"></i> Cancelar y volver al catálogo
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Neón -->
+    <div class="footer-neon-divider"></div>
+    <footer class="footer-gta">
+        <div class="container">
+            <span class="small text-white-50">© 2026 <strong>Ferretería VI</strong> — Panel Administrativo Vice City.</span>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+{% extends 'catalogo/base.html' %}
+{% load static %}
+
+{% block title %}Consultas y Contacto — Ferretería VI{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="margin-top: 75px;">
+
+    <!-- Encabezado con Estilo GTA VI -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pb-3 border-bottom border-white border-opacity-10">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-info text-dark fw-bold px-3 py-1 text-uppercase" style="letter-spacing: 1px;">
+                    <i class="bi bi-chat-left-dots-fill me-1"></i> Atención al Cliente
+                </span>
+            </div>
+            <h1 class="h2 fw-bold text-white m-0" style="text-shadow: 0 0 15px rgba(73,196,196,0.35);">
+                Centro de Consultas y Contacto
+            </h1>
+            <p class="text-white-50 small m-0 mt-1">
+                Envía tus dudas, solicitudes de cotización o consultas de stock a nuestro equipo.
+            </p>
+        </div>
+
+        <a href="{% url 'buscar_productos' %}" class="btn btn-outline-light rounded-pill px-3 py-2 fw-bold small">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Catálogo
+        </a>
+    </div>
+
+    <!-- Mensaje de Confirmación de Guardado en BD -->
+    {% if consulta_exitosa and datos_consulta %}
+        <div class="alert rounded-4 p-4 mb-4 border-0" style="background: linear-gradient(135deg, rgba(73,196,196,0.22), rgba(21,115,71,0.35)); border: 1.5px solid rgba(73,196,196,0.7) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+            <div class="d-flex align-items-start gap-3">
+                <i class="bi bi-check-circle-fill text-info fs-1 flex-shrink-0"></i>
+                <div>
+                    <h4 class="fw-bold text-white mb-1">¡Consulta Registrada con Éxito en la Base de Datos!</h4>
+                    <p class="text-white-50 mb-2">
+                        Hola <strong>{{ datos_consulta.nombre }}</strong>, tu mensaje ha sido guardado exitosamente con fecha <strong>{{ datos_consulta.fecha|date:"d/m/Y H:i" }}</strong>.
+                    </p>
+                    <div class="small text-light">
+                        <strong>Correo de contacto:</strong> {{ datos_consulta.correo }}
+                        {% if datos_consulta.producto_interes %}
+                            <br><strong>Producto consultado:</strong> {{ datos_consulta.producto_interes.nombre }} (ID #{{ datos_consulta.producto_interes.id }})
+                        {% endif %}
+                    </div>
+                    <div class="mt-3">
+                        <a href="{% url 'contacto_cliente' %}" class="btn btn-sm btn-info text-dark fw-bold rounded-pill px-3 py-1 me-2">
+                            Enviar otra consulta
+                        </a>
+                        <a href="{% url 'buscar_productos' %}" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1">
+                            Ir al Catálogo de Productos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <!-- Columna Izquierda: Formulario con ModelForm y CSRF Token -->
+        <div class="col-12 col-lg-7">
+            <div class="p-4 rounded-4" style="background: rgba(16, 12, 28, 0.96); border: 1.5px solid rgba(241, 82, 164, 0.35); box-shadow: 0 15px 35px rgba(0,0,0,0.6);">
+                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom border-white border-opacity-10">
+                    <h5 class="fw-bold text-white m-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-envelope-paper-fill text-warning"></i> Formulario de Consulta
+                    </h5>
+                    <span class="text-white-50 small">* Campos obligatorios</span>
+                </div>
+
+                <!-- Formulario ModelForm con validaciones operativas y CSRF -->
+                <form method="post" action="{% url 'contacto_cliente' %}" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger rounded-3 py-2 px-3 mb-3 small fw-bold">
+                            {% for error in form.non_field_errors %}
+                                <div><i class="bi bi-exclamation-triangle-fill me-1"></i> {{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Campo: Nombre -->
+                    <div class="mb-3">
+                        <label for="{{ form.nombre.id_for_label }}" class="form-label text-light fw-bold small text-uppercase" style="letter-spacing: 0.8px;">
+                            {{ form.nombre.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.nombre }}
+                        {% if form.nombre.help_text %}
+                            <div class="form-text text-white-50 small mt-1">
+                                <i class="bi bi-info-circle me-1"></i> {{ form.nombre.help_text }}
+                            </div>
+                        {% endif %}
+                        {% if form.nombre.errors %}
+                            <div class="text-danger small mt-1 fw-bold">
+                                {% for error in form.nombre.errors %}
+                                    <div><i class="bi bi-x-circle-fill me-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Campo: Correo Electrónico -->
+                    <div class="mb-3">
+                        <label for="{{ form.correo.id_for_label }}" class="form-label text-light fw-bold small text-uppercase" style="letter-spacing: 0.8px;">
+                            {{ form.correo.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.correo }}
+                        {% if form.correo.help_text %}
+                            <div class="form-text text-white-50 small mt-1">
+                                <i class="bi bi-info-circle me-1"></i> {{ form.correo.help_text }}
+                            </div>
+                        {% endif %}
+                        {% if form.correo.errors %}
+                            <div class="text-danger small mt-1 fw-bold">
+                                {% for error in form.correo.errors %}
+                                    <div><i class="bi bi-x-circle-fill me-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Campo: Producto de Interés (Opcional) -->
+                    <div class="mb-3">
+                        <label for="{{ form.producto_interes.id_for_label }}" class="form-label text-light fw-bold small text-uppercase" style="letter-spacing: 0.8px;">
+                            {{ form.producto_interes.label }}
+                        </label>
+                        {{ form.producto_interes }}
+                        {% if form.producto_interes.help_text %}
+                            <div class="form-text text-white-50 small mt-1">
+                                <i class="bi bi-info-circle me-1"></i> {{ form.producto_interes.help_text }}
+                            </div>
+                        {% endif %}
+                        {% if form.producto_interes.errors %}
+                            <div class="text-danger small mt-1 fw-bold">
+                                {% for error in form.producto_interes.errors %}
+                                    <div><i class="bi bi-x-circle-fill me-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Campo: Mensaje de Consulta -->
+                    <div class="mb-4">
+                        <label for="{{ form.mensaje.id_for_label }}" class="form-label text-light fw-bold small text-uppercase" style="letter-spacing: 0.8px;">
+                            {{ form.mensaje.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.mensaje }}
+                        {% if form.mensaje.help_text %}
+                            <div class="form-text text-white-50 small mt-1">
+                                <i class="bi bi-info-circle me-1"></i> {{ form.mensaje.help_text }}
+                            </div>
+                        {% endif %}
+                        {% if form.mensaje.errors %}
+                            <div class="text-danger small mt-1 fw-bold">
+                                {% for error in form.mensaje.errors %}
+                                    <div><i class="bi bi-x-circle-fill me-1"></i> {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Botón de Envío -->
+                    <button type="submit" class="btn btn-gta-send w-100 py-3 fw-bold rounded-pill text-uppercase" style="background: linear-gradient(135deg, #49c4c4 0%, #157347 100%); color: #fff; border: none; letter-spacing: 1.5px; box-shadow: 0 6px 20px rgba(73,196,196,0.45); transition: all 0.25s ease;">
+                        <i class="bi bi-send-fill me-2"></i> Enviar Consulta a Ferretería VI
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Información de Contacto y Productos Vistos en Sesión -->
+        <div class="col-12 col-lg-5">
+            <!-- Tarjeta de Atención al Cliente -->
+            <div class="p-4 rounded-4 mb-4" style="background: rgba(18, 12, 30, 0.95); border: 1px solid rgba(73, 196, 196, 0.35); box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                <h5 class="fw-bold text-white mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-geo-alt-fill text-info"></i> Casa Central Ferretería VI
+                </h5>
+                <ul class="list-unstyled text-white-50 small m-0 d-flex flex-column gap-2">
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-pin-map text-warning"></i>
+                        <span>Av. Ocean Beach #1986, Vice City</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-telephone text-info"></i>
+                        <span>+56 9 8765 4321 · Mesa Central</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-envelope text-warning"></i>
+                        <span>soporte@ferreteriavi.cl</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock text-info"></i>
+                        <span>Lunes a Sábado: 08:30 a 19:30 hrs</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Funcionalidad con Sesiones (ES3): Últimos 3 productos visitados por el usuario -->
+            <div class="p-4 rounded-4" style="background: rgba(18, 12, 30, 0.95); border: 1px solid rgba(241, 82, 164, 0.35); box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="fw-bold text-white m-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-clock-history text-warning"></i> Vistos en tu Sesión Activa
+                    </h6>
+                    <span class="badge bg-dark text-info border border-info border-opacity-50 small">
+                        Visita #{{ contador_visitas_sesion }}
+                    </span>
+                </div>
+                <p class="text-white-50 small mb-3">
+                    Historial guardado en <code>request.session['ultimos_visitados']</code> (máximo 3 productos):
+                </p>
+
+                {% if ultimos_visitados_productos %}
+                    <div class="d-flex flex-column gap-2">
+                        {% for prod in ultimos_visitados_productos %}
+                            <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="d-flex align-items-center gap-2 overflow-hidden">
+                                    {% if prod.imagen %}
+                                        <img src="{{ prod.imagen.url }}" alt="{{ prod.nombre }}" style="width: 36px; height: 36px; object-fit: cover; border-radius: 6px;">
+                                    {% elif prod.imagen_url %}
+                                        <img src="{{ prod.imagen_url }}" alt="{{ prod.nombre }}" style="width: 36px; height: 36px; object-fit: cover; border-radius: 6px;">
+                                    {% else %}
+                                        <div class="bg-dark rounded p-1 text-center" style="width: 36px; height: 36px;">🛠️</div>
+                                    {% endif %}
+                                    <div class="text-truncate">
+                                        <a href="{% url 'detalle_producto' prod.id %}" class="text-decoration-none text-white fw-bold small text-truncate d-block">
+                                            {{ prod.nombre }}
+                                        </a>
+                                        <span class="text-white-50" style="font-size: 0.72rem;">${{ prod.precio }} · Stock: {{ prod.stock }}</span>
+                                    </div>
+                                </div>
+                                <a href="{% url 'contacto_cliente' %}?producto={{ prod.id }}" class="btn btn-sm btn-outline-info rounded-pill px-2 py-0 text-nowrap" style="font-size: 0.72rem;" title="Consultar por este producto">
+                                    Consultar
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-3 text-white-50 small">
+                        <i class="bi bi-eye text-secondary fs-4 d-block mb-1"></i>
+                        Aún no has visitado fichas de productos en esta sesión.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

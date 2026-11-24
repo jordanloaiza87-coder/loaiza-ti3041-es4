@@ -1,0 +1,1725 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito - Ferretería VI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gta-pink: #f152a4;
+            --gta-orange: #f58426;
+            --gta-purple: #2a114b;
+            --gta-teal: #49c4c4;
+            --bg-dark: #0a0a0c;
+        }
+
+        body {
+            background-color: #0a0a0c;
+            color: #f8f9fa;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Imagen principal de fondo difuminada (borrosa) */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -25px;
+            background: url("{% static 'images/hero_gta.jpg' %}") no-repeat center center / cover;
+            filter: blur(20px) brightness(0.42) saturate(1.3);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 14, 0.45) 0%,
+                rgba(20, 13, 34, 0.68) 50%,
+                rgba(35, 16, 60, 0.82) 100%
+            );
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ----- Navbar Flotante Ordenada (Logo + Buscador + Perfil Fuera + 3 Líneas) ----- */
+        .navbar-gta {
+            background: rgba(10, 10, 16, 0.94) !important;
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border-bottom: 1px solid rgba(241, 82, 164, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+            z-index: 1050;
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+
+        .navbar-gta .container {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: stretch !important;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .navbar-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            width: 100%;
+            padding: 2px 0;
+            flex-wrap: nowrap;
+        }
+
+        .navbar-brand {
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+        }
+
+        .nav-logo-gta {
+            height: 44px;
+            max-height: 44px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            filter: drop-shadow(0 0 10px rgba(241, 82, 164, 0.45));
+            transition: transform 0.25s ease;
+            display: block;
+        }
+
+        .nav-logo-gta:hover {
+            transform: scale(1.04);
+        }
+
+        .nav-search-wrapper {
+            flex: 1 1 auto;
+            max-width: 560px;
+            min-width: 0;
+            margin: 0 4px;
+        }
+
+        .search-input-group {
+            background: rgba(20, 14, 34, 0.95);
+            border: 1.5px solid rgba(241, 82, 164, 0.45);
+            border-radius: 9px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            min-width: 0;
+        }
+
+        .search-input-group:focus-within {
+            border-color: var(--gta-teal);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7), 0 0 18px rgba(73, 196, 196, 0.35);
+        }
+
+        .search-icon-neon {
+            color: var(--gta-pink);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .search-input-gta {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.84rem;
+            width: 100%;
+            min-width: 50px;
+            flex: 1 1 auto;
+            outline: none;
+        }
+
+        .search-input-gta::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .btn-hamburger-gta {
+            position: relative;
+            background: linear-gradient(145deg, rgba(36, 22, 58, 0.95), rgba(18, 12, 32, 0.98));
+            border: 1.5px solid rgba(241, 82, 164, 0.55);
+            color: #ffffff;
+            border-radius: 9px;
+            padding: 5px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 12px rgba(241, 82, 164, 0.2);
+            transition: all 0.25s ease;
+        }
+
+        .btn-hamburger-gta:hover,
+        .btn-hamburger-gta[aria-expanded="true"] {
+            border-color: var(--gta-teal);
+            background: linear-gradient(145deg, rgba(241, 82, 164, 0.28), rgba(42, 17, 75, 0.95));
+            color: #ffffff;
+        }
+
+        .btn-hamburger-gta .hamburger-lines-icon {
+            font-size: 1.35rem;
+            line-height: 1;
+            color: var(--gta-pink);
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+
+        .btn-hamburger-gta[aria-expanded="true"] .hamburger-lines-icon {
+            color: var(--gta-teal);
+            transform: rotate(90deg);
+        }
+
+        .cart-badge-count {
+            background: #0a0a0c;
+            color: var(--gta-teal);
+            border: 1px solid rgba(73, 196, 196, 0.6);
+            font-size: 0.68rem;
+            font-weight: 900;
+            padding: 1px 6px;
+            border-radius: 50px;
+        }
+
+        #gtaNavMenuPanel {
+            display: none !important;
+            transition: all 0.28s ease;
+        }
+
+        #gtaNavMenuPanel.show,
+        #gtaNavMenuPanel.is-open {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .gta-collapse-panel {
+            margin-top: 8px;
+            background: linear-gradient(165deg, rgba(22, 14, 38, 0.98) 0%, rgba(10, 8, 18, 0.99) 100%);
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            border-radius: 16px;
+            padding: 16px 18px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(241, 82, 164, 0.2);
+        }
+
+        .gta-menu-section-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .gta-menu-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .gta-menu-item-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 11px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.22s ease;
+            width: 100%;
+        }
+
+        .gta-menu-item-btn:hover {
+            background: rgba(241, 82, 164, 0.18);
+            border-color: var(--gta-pink);
+            transform: translateY(-2px);
+        }
+
+        .gta-menu-item-btn.item-cart {
+            background: linear-gradient(135deg, rgba(241, 82, 164, 0.3) 0%, rgba(245, 132, 38, 0.3) 100%);
+            border-color: rgba(241, 82, 164, 0.65);
+        }
+
+        .gta-menu-item-btn.item-history {
+            background: rgba(245, 132, 38, 0.12);
+            border-color: rgba(245, 132, 38, 0.4);
+        }
+
+        .gta-menu-item-btn.item-admin {
+            background: rgba(73, 196, 196, 0.12);
+            border-color: rgba(73, 196, 196, 0.4);
+        }
+
+        .gta-menu-item-btn.item-logout {
+            background: rgba(255, 75, 75, 0.12);
+            border-color: rgba(255, 75, 75, 0.35);
+            color: #ffb3b3 !important;
+        }
+
+        .header-subnav-link {
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            transition: all 0.2s ease;
+        }
+
+        .header-subnav-link:hover {
+            color: #ffffff;
+            background: rgba(241, 82, 164, 0.2);
+        }
+
+        @media (max-width: 576px) {
+            .nav-logo-gta {
+                height: 35px;
+                max-height: 35px;
+            }
+            .page-header-title {
+                font-size: 1.55rem !important;
+            }
+            .cart-item {
+                padding: 15px 16px !important;
+            }
+            .cart-footer-bar {
+                padding: 18px 16px !important;
+            }
+        }
+
+        .user-badge-gta {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            border-radius: 50px;
+            padding: 5px 14px 5px 8px;
+            font-size: 0.82rem;
+            color: #ffffff !important;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .user-badge-gta:hover {
+            background: linear-gradient(135deg, rgba(241, 82, 164, 0.25), rgba(245, 132, 38, 0.25));
+            border-color: var(--gta-pink);
+            transform: translateY(-2px);
+            box-shadow: 0 0 18px rgba(241, 82, 164, 0.4);
+        }
+
+        .user-badge-gta i {
+            color: var(--gta-teal);
+            font-size: 0.95rem;
+        }
+
+        .nav-avatar-img {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--gta-teal);
+        }
+
+        .admin-tag-mini {
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 20px;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .btn-nav-admin {
+            background: rgba(73, 196, 196, 0.1);
+            border: 1px solid rgba(73, 196, 196, 0.4);
+            color: #e0fafa !important;
+            border-radius: 50px;
+            padding: 7px 15px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .btn-nav-admin i {
+            color: var(--gta-teal);
+        }
+
+        .btn-nav-admin:hover {
+            background: linear-gradient(135deg, rgba(73, 196, 196, 0.28), rgba(42, 17, 75, 0.6));
+            border-color: var(--gta-teal);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 0 18px rgba(73, 196, 196, 0.4);
+        }
+
+        .btn-nav-history {
+            background: rgba(241, 82, 164, 0.12);
+            border: 1px solid rgba(241, 82, 164, 0.45);
+            color: #ffd6ec !important;
+            border-radius: 50px;
+            padding: 7px 15px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-history i {
+            color: var(--gta-pink);
+        }
+
+        .btn-nav-history:hover {
+            background: rgba(241, 82, 164, 0.28);
+            border-color: var(--gta-pink);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 0 18px rgba(241, 82, 164, 0.4);
+        }
+
+        .btn-nav-cart {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            border-radius: 50px;
+            padding: 7px 18px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 4px 16px rgba(241, 82, 164, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav-cart:hover {
+            background: linear-gradient(135deg, var(--gta-orange) 0%, var(--gta-pink) 100%);
+            transform: translateY(-2px);
+        }
+
+        .btn-nav-logout {
+            background: rgba(255, 65, 108, 0.12);
+            border: 1px solid rgba(255, 65, 108, 0.4);
+            color: #ff8da1 !important;
+            border-radius: 50px;
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-nav-logout:hover {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            border-color: transparent;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 65, 108, 0.5);
+        }
+
+        /* Contenedor Carrito */
+        .cart-wrapper {
+            flex: 1;
+            padding-top: 110px;
+            padding-bottom: 70px;
+        }
+
+        .page-header-title {
+            font-size: 2.6rem;
+            font-weight: 950;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #ffffff, var(--gta-pink), var(--gta-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .page-header-subtitle {
+            color: var(--gta-teal);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+        }
+
+        /* Tarjeta de Cristal del Carrito */
+        .card-cart {
+            background: linear-gradient(165deg, rgba(32, 20, 48, 0.82) 0%, rgba(13, 11, 22, 0.94) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(241, 82, 164, 0.28);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 30px rgba(241, 82, 164, 0.15);
+            position: relative;
+        }
+
+        .card-cart::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gta-pink), var(--gta-orange), transparent);
+            box-shadow: 0 0 15px rgba(241, 82, 164, 0.7);
+        }
+
+        /* Items del Carrito */
+        .cart-item {
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 22px 28px;
+            transition: all 0.25s ease;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item:hover {
+            background: rgba(241, 82, 164, 0.07);
+        }
+
+        /* Miniatura de producto con degradado limpio */
+        .item-icon-box {
+            width: 66px;
+            height: 66px;
+            border-radius: 16px;
+            background: radial-gradient(circle at 50% 45%, #ffffff 0%, #ffffff 55%, #e5ccf5 100%);
+            border: 1px solid rgba(241, 82, 164, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            margin-right: 18px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 12px rgba(241, 82, 164, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-icon-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        .item-icon-box.no-img {
+            background: radial-gradient(circle, rgba(241, 82, 164, 0.25) 0%, rgba(15, 12, 24, 0.9) 100%);
+            font-size: 1.6rem;
+        }
+
+        .item-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 4px;
+            letter-spacing: 0.4px;
+        }
+
+        .item-price {
+            color: rgba(255, 255, 255, 0.65);
+            font-weight: 600;
+            font-size: 0.88rem;
+        }
+
+        .item-subtotal {
+            color: var(--gta-orange);
+            font-weight: 900;
+            font-size: 1.25rem;
+        }
+
+        .item-quantity-pill {
+            background: rgba(73, 196, 196, 0.15);
+            border: 1px solid rgba(73, 196, 196, 0.4);
+            color: var(--gta-teal);
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 12px rgba(73, 196, 196, 0.2);
+        }
+
+        .btn-remove-item {
+            background: rgba(255, 75, 75, 0.12);
+            border: 1px solid rgba(255, 75, 75, 0.35);
+            color: #ff6b6b;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-remove-item:hover {
+            background: #ff4b4b;
+            color: #ffffff;
+            transform: scale(1.1);
+            box-shadow: 0 0 12px rgba(255, 75, 75, 0.5);
+        }
+
+        /* Pie del Carrito */
+        .cart-footer-bar {
+            background: rgba(10, 8, 16, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 26px 30px;
+        }
+
+        .total-amount-box {
+            font-size: 1.9rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 10%, var(--gta-orange) 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-confirm-order {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            font-weight: 800;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 14px;
+            padding: 14px 34px;
+            box-shadow: 0 4px 22px rgba(241, 82, 164, 0.45);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .btn-confirm-order:hover {
+            background: linear-gradient(135deg, var(--gta-orange) 0%, var(--gta-pink) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(245, 132, 38, 0.6);
+        }
+
+        .btn-confirm-order-blue {
+            background: linear-gradient(135deg, #0984e3 0%, #00cec9 100%) !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 0.95rem !important;
+            letter-spacing: 1.5px !important;
+            text-transform: uppercase !important;
+            border-radius: 14px !important;
+            padding: 13px 28px !important;
+            box-shadow: 0 4px 22px rgba(9, 132, 227, 0.55), 0 0 15px rgba(0, 206, 201, 0.4) !important;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-decoration: none !important;
+        }
+
+        .btn-confirm-order-blue:hover {
+            background: linear-gradient(135deg, #00cec9 0%, #0984e3 100%) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 30px rgba(9, 132, 227, 0.75), 0 0 20px rgba(0, 206, 201, 0.6) !important;
+            color: #ffffff !important;
+        }
+
+        .btn-return {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-return:hover {
+            background: rgba(241, 82, 164, 0.25);
+            border-color: var(--gta-pink);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* Estado Vacío */
+        .empty-cart-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-icon-glow {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            filter: drop-shadow(0 0 25px rgba(241, 82, 164, 0.6));
+            animation: floatIcon 3s ease-in-out infinite;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ----- OVERLAY DE ANIMACIÓN GTA VI: DISPAROS + WANTED STARS + COMPRA CON ÉXITO ----- */
+        .checkout-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(28, 14, 45, 0.94) 0%, rgba(6, 5, 12, 0.98) 100%);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            overflow: hidden;
+            transition: opacity 0.35s ease;
+        }
+
+        .checkout-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Ráfagas de disparos (Bullet Tracers) cruzando de lado a lado */
+        .bullet-tracer {
+            position: absolute;
+            height: 3px;
+            border-radius: 50px;
+            pointer-events: none;
+            z-index: 2001;
+            opacity: 0;
+        }
+
+        .bullet-tracer::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 0 16px #ffffff, 0 0 28px var(--gta-orange);
+        }
+
+        .tracer-ltr {
+            background: linear-gradient(90deg, transparent 0%, var(--gta-pink) 35%, var(--gta-orange) 80%, #ffffff 100%);
+            box-shadow: 0 0 18px rgba(245, 132, 38, 0.85);
+        }
+        .tracer-ltr::after { right: -4px; }
+
+        .tracer-rtl {
+            background: linear-gradient(270deg, transparent 0%, var(--gta-teal) 35%, var(--gta-pink) 80%, #ffffff 100%);
+            box-shadow: 0 0 18px rgba(73, 196, 196, 0.85);
+        }
+        .tracer-rtl::after { left: -4px; }
+
+        .tracer-1 { top: 16%; width: 280px; animation: shootLeftToRight 0.55s cubic-bezier(0.1, 0.8, 0.3, 1) infinite; animation-delay: 0.05s; }
+        .tracer-2 { top: 34%; width: 340px; animation: shootRightToLeft 0.65s cubic-bezier(0.1, 0.8, 0.3, 1) infinite; animation-delay: 0.2s; }
+        .tracer-3 { top: 52%; width: 250px; animation: shootLeftToRight 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) infinite; animation-delay: 0.35s; }
+        .tracer-4 { top: 68%; width: 320px; animation: shootRightToLeft 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) infinite; animation-delay: 0.12s; }
+        .tracer-5 { top: 84%; width: 300px; animation: shootLeftToRight 0.58s cubic-bezier(0.1, 0.8, 0.3, 1) infinite; animation-delay: 0.28s; }
+
+        @keyframes shootLeftToRight {
+            0% { left: -35%; opacity: 0; transform: rotate(-2deg) scaleX(0.5); }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { left: 115%; opacity: 0; transform: rotate(-2deg) scaleX(1.3); }
+        }
+
+        @keyframes shootRightToLeft {
+            0% { right: -35%; opacity: 0; transform: rotate(2deg) scaleX(0.5); }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { right: 115%; opacity: 0; transform: rotate(2deg) scaleX(1.3); }
+        }
+
+        /* Chispas de impacto (Muzzle / Bullet Sparks) */
+        .bullet-spark {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #fff3b0;
+            box-shadow: 0 0 18px 6px rgba(245, 132, 38, 0.9), 0 0 32px 10px rgba(241, 82, 164, 0.7);
+            pointer-events: none;
+            z-index: 2001;
+            opacity: 0;
+            animation: sparkFlash 0.65s ease-out infinite;
+        }
+        .spark-a { top: 22%; left: 22%; animation-delay: 0.15s; }
+        .spark-b { top: 74%; left: 78%; animation-delay: 0.4s; }
+        .spark-c { top: 30%; left: 82%; animation-delay: 0.25s; }
+        .spark-d { top: 68%; left: 18%; animation-delay: 0.5s; }
+
+        @keyframes sparkFlash {
+            0%, 100% { transform: scale(0.2); opacity: 0; }
+            35% { transform: scale(1.7); opacity: 1; }
+            70% { transform: scale(0.5); opacity: 0; }
+        }
+
+        /* Resplandor de sirena policial Vice City */
+        .gta-siren-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2000;
+            animation: sirenPulse 0.9s ease-in-out infinite alternate;
+        }
+
+        @keyframes sirenPulse {
+            0% { box-shadow: inset 60px 0 120px rgba(241, 82, 164, 0.22), inset -60px 0 120px rgba(73, 196, 196, 0.05); }
+            100% { box-shadow: inset 60px 0 120px rgba(241, 82, 164, 0.05), inset -60px 0 120px rgba(73, 196, 196, 0.22); }
+        }
+
+        /* Estrellas Wanted Level GTA VI */
+        .wanted-stars-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .wanted-star {
+            font-size: 1.55rem;
+            color: #ffd166;
+            filter: drop-shadow(0 0 10px rgba(245, 132, 38, 0.9));
+            animation: wantedBlink 0.48s ease-in-out infinite alternate;
+        }
+        .wanted-star:nth-child(1) { animation-delay: 0.0s; }
+        .wanted-star:nth-child(2) { animation-delay: 0.08s; }
+        .wanted-star:nth-child(3) { animation-delay: 0.16s; }
+        .wanted-star:nth-child(4) { animation-delay: 0.24s; }
+        .wanted-star:nth-child(5) { animation-delay: 0.32s; }
+
+        @keyframes wantedBlink {
+            0% { opacity: 0.3; transform: scale(0.86); }
+            100% { opacity: 1; transform: scale(1.16); color: #ffffff; filter: drop-shadow(0 0 15px var(--gta-orange)); }
+        }
+
+        .checkout-modal-card {
+            background: linear-gradient(165deg, rgba(35, 22, 54, 0.95) 0%, rgba(14, 10, 24, 0.98) 100%);
+            border: 1px solid rgba(241, 82, 164, 0.45);
+            border-radius: 28px;
+            padding: 40px 36px;
+            max-width: 510px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(241, 82, 164, 0.35);
+            position: relative;
+            z-index: 2005;
+            overflow: hidden;
+            transform: scale(0.92);
+            transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .checkout-overlay.show .checkout-modal-card {
+            transform: scale(1);
+        }
+
+        .checkout-modal-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gta-pink), var(--gta-orange), var(--gta-teal));
+        }
+
+        /* ----- LOGO DE GTA VI CARGANDO POCO A POCO (0% -> 100%) ----- */
+        .gta6-logo-loader-wrap {
+            width: 210px;
+            height: 155px;
+            margin: 0 auto 14px auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .gta6-logo-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* Silueta base apagada del logo GTA VI */
+        .gta6-logo-layer-empty {
+            position: absolute;
+            inset: 0;
+            opacity: 0.22;
+            filter: drop-shadow(0 0 8px rgba(241, 82, 164, 0.3));
+        }
+
+        /* Capa que se va llenando de abajo hacia arriba poco a poco */
+        .gta6-logo-layer-fill {
+            position: absolute;
+            inset: 0;
+            clip-path: inset(100% 0 0 0);
+            transition: clip-path 0.08s linear;
+            filter: drop-shadow(0 0 18px rgba(241, 82, 164, 0.8)) drop-shadow(0 0 32px rgba(245, 132, 38, 0.5));
+        }
+
+        .gta6-logo-layer-completed {
+            position: relative;
+            width: 185px;
+            height: 135px;
+            margin: 0 auto 14px auto;
+            filter: drop-shadow(0 0 22px rgba(73, 196, 196, 0.75)) drop-shadow(0 0 40px rgba(241, 82, 164, 0.65));
+            animation: popSuccess 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .gta6-percent-badge {
+            display: inline-block;
+            background: rgba(241, 82, 164, 0.16);
+            border: 1px solid rgba(241, 82, 164, 0.5);
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+            padding: 4px 16px;
+            border-radius: 50px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 15px rgba(241, 82, 164, 0.35);
+        }
+
+        /* Barra de progreso neón */
+        .gta-progress-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 14px 0 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .gta-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--gta-pink), var(--gta-orange), var(--gta-teal));
+            box-shadow: 0 0 15px var(--gta-pink);
+            border-radius: 10px;
+            transition: width 0.08s linear;
+        }
+
+        /* Icono de Éxito Animado */
+        .success-badge-circle {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 22px auto;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(73, 196, 196, 0.3) 0%, rgba(20, 12, 35, 0.9) 100%);
+            border: 2px solid var(--gta-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.2rem;
+            color: var(--gta-teal);
+            box-shadow: 0 0 35px rgba(73, 196, 196, 0.55);
+            animation: popSuccess 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popSuccess {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-title-gta {
+            font-size: 1.9rem;
+            font-weight: 900;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            background: linear-gradient(to right, #ffffff, var(--gta-pink), var(--gta-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .modal-title-success {
+            font-size: 2.1rem;
+            font-weight: 950;
+            font-style: italic;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            background: linear-gradient(to right, #ffffff, var(--gta-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        /* Footer GTA */
+        .footer-gta {
+            background: linear-gradient(180deg, rgba(14, 10, 20, 0.95) 0%, #06050a 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .footer-neon-divider {
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, var(--gta-pink), var(--gta-orange), var(--gta-teal), transparent);
+            box-shadow: 0 0 12px rgba(241, 82, 164, 0.6);
+        }
+
+        /* Controles Interactivos de Cantidad (+ / -) */
+        .qty-control-group {
+            background: rgba(14, 10, 24, 0.9);
+            border: 1.5px solid rgba(241, 82, 164, 0.45);
+            border-radius: 50px;
+            padding: 3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-qty-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-qty-action:hover {
+            background: var(--gta-pink);
+            border-color: var(--gta-pink);
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        .qty-current-val {
+            min-width: 28px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 0.9rem;
+            color: var(--gta-teal);
+        }
+
+        /* Sección de Cupones */
+        .coupon-card-section {
+            background: rgba(20, 13, 34, 0.7);
+            border: 1px dashed rgba(241, 82, 164, 0.45);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-top: 18px;
+        }
+
+        .coupon-input-gta {
+            background: rgba(10, 8, 16, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+        }
+
+        .coupon-input-gta:focus {
+            background: rgba(15, 10, 25, 0.95);
+            border-color: var(--gta-teal);
+            box-shadow: 0 0 12px rgba(73, 196, 196, 0.35);
+            color: #ffffff;
+            outline: none;
+        }
+
+        .coupon-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(73, 196, 196, 0.16);
+            border: 1px solid var(--gta-teal);
+            border-radius: 50px;
+            padding: 4px 12px;
+            font-size: 0.78rem;
+            color: var(--gta-teal);
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .coupon-badge-pill:hover {
+            background: var(--gta-teal);
+            color: #0b0814;
+        }
+
+        /* Selector de Método de Pago */
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 10px;
+            margin: 14px 0 18px 0;
+        }
+
+        .payment-option-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 12px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+        }
+
+        .payment-option-card:hover {
+            border-color: rgba(241, 82, 164, 0.5);
+            background: rgba(241, 82, 164, 0.08);
+        }
+
+        .payment-option-card.active {
+            border-color: var(--gta-teal);
+            background: rgba(73, 196, 196, 0.14);
+            box-shadow: 0 0 18px rgba(73, 196, 196, 0.25);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Flotante GTA VI Ordenada (Logo + Buscador + Perfil Fuera + Menú 3 Líneas) -->
+    {% include 'catalogo/includes/navbar.html' %}
+
+    <!-- Contenedor Principal -->
+    <div class="cart-wrapper">
+        <div class="container" style="max-width: 880px;">
+            
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-header-title">Mi Carrito</h1>
+                    <div class="page-header-subtitle">Equipamiento & Herramientas Guardadas</div>
+                </div>
+                <div class="d-flex gap-2 mb-3 mb-sm-0">
+                    {% if user.is_authenticated and not user.is_superuser %}
+                        <a href="{% url 'historial_compras' %}" class="btn-return" style="border-color: rgba(73,196,196,0.4); color: var(--gta-teal);">
+                            <i class="bi bi-clock-history"></i> Historial
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'buscar_productos' %}" class="btn-return">
+                        <i class="bi bi-chevron-left"></i> Seguir Comprando
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tarjeta Glassmorphism del Carrito -->
+            <div class="card-cart" id="cartCardContainer">
+                <div class="p-0" id="cartItemsList">
+                    {% for item in items %}
+                        <div class="cart-item d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
+                            <div class="d-flex align-items-center">
+                                {% if item.producto.imagen %}
+                                    <div class="item-icon-box">
+                                        <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}">
+                                    </div>
+                                {% elif item.producto.imagen_url %}
+                                    <div class="item-icon-box">
+                                        <img src="{{ item.producto.imagen_url }}" alt="{{ item.producto.nombre }}">
+                                    </div>
+                                {% else %}
+                                    <div class="item-icon-box no-img">
+                                        <span>🛠️</span>
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <h5 class="item-title">{{ item.producto.nombre }}</h5>
+                                    <div class="item-price">Precio unitario: ${{ item.producto.precio }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex align-items-center justify-content-between justify-content-sm-end gap-3 mt-2 mt-sm-0">
+                                <div class="qty-control-group">
+                                    <button type="button" class="btn-qty-action js-qty-btn" data-url="{% url 'actualizar_cantidad_carrito' item.producto.id %}" data-action="restar" data-pid="{{ item.producto.id }}" title="Restar una unidad">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+                                    <span class="qty-current-val" id="qtyVal-{{ item.producto.id }}">{{ item.cantidad }}</span>
+                                    <button type="button" class="btn-qty-action js-qty-btn" data-url="{% url 'actualizar_cantidad_carrito' item.producto.id %}" data-action="sumar" data-pid="{{ item.producto.id }}" title="Sumar una unidad">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
+                                <div class="text-end" style="min-width: 90px;">
+                                    <div class="text-white-50" style="font-size: 0.7rem; text-transform: uppercase;">Subtotal</div>
+                                    <div class="item-subtotal" id="subtotalVal-{{ item.producto.id }}">${{ item.subtotal }}</div>
+                                </div>
+                                <a href="{% url 'eliminar_del_carrito' item.producto.id %}" class="btn-remove-item" title="Quitar del carrito">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="empty-cart-state">
+                            <div class="empty-icon-glow">🛒</div>
+                            <h3 class="fw-bold text-white mb-2">Tu carrito está vacío</h3>
+                            <p class="text-white-50 mb-4" style="max-width: 460px; margin: 0 auto;">
+                                Puedes guardar cualquier herramienta en tu carrito libremente y confirmar tu compra cuando estés listo.
+                            </p>
+                            <div class="d-flex flex-wrap justify-content-center gap-3">
+                                <a href="{% url 'buscar_productos' %}" class="btn-confirm-order">
+                                    <i class="bi bi-grid-fill me-2"></i> Explorar Catálogo
+                                </a>
+                                {% if user.is_authenticated and not user.is_superuser %}
+                                    <a href="{% url 'historial_compras' %}" class="btn-return">
+                                        <i class="bi bi-clock-history me-1"></i> Ver Mis Compras
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% if items %}
+                <!-- Sección de Cupones de Descuento -->
+                <div class="coupon-card-section" id="couponSection">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-ticket-perforated-fill text-warning fs-5"></i>
+                            <strong class="text-white small">¿Tienes un Cupón de Descuento?</strong>
+                        </div>
+                        <div class="d-flex flex-wrap gap-1">
+                            <span class="text-white-50 small me-1">Sugeridos:</span>
+                            <span class="coupon-badge-pill js-quick-coupon" data-code="VICECITY10">VICECITY10 (-10%)</span>
+                            <span class="coupon-badge-pill js-quick-coupon" data-code="FERRETERIA20">FERRETERIA20 (-20%)</span>
+                            <span class="coupon-badge-pill js-quick-coupon" data-code="ENVIOGRATIS">ENVIOGRATIS (-$3.000)</span>
+                        </div>
+                    </div>
+
+                    <form action="{% url 'aplicar_cupon' %}" method="post" id="couponForm" class="d-flex gap-2">
+                        {% csrf_token %}
+                        <input type="text" name="codigo_cupon" id="couponInput" class="coupon-input-gta flex-grow-1" placeholder="INGRESA TU CÓDIGO (EJ: VICECITY10)" value="{% if cupon_info %}{{ cupon_info.codigo }}{% endif %}">
+                        {% if cupon_info %}
+                            <button type="submit" name="accion" value="quitar" class="btn btn-outline-danger rounded-pill px-3 fw-bold btn-sm">
+                                <i class="bi bi-x-circle me-1"></i> Quitar
+                            </button>
+                        {% else %}
+                            <button type="submit" name="accion" value="aplicar" class="btn btn-info text-dark rounded-pill px-4 fw-bold btn-sm">
+                                Aplicar
+                            </button>
+                        {% endif %}
+                    </form>
+
+                    {% if cupon_feedback %}
+                        <div class="mt-2 small {% if cupon_feedback.ok %}text-info{% else %}text-danger{% endif %} fw-bold">
+                            {{ cupon_feedback.mensaje }}
+                        </div>
+                    {% elif cupon_info %}
+                        <div class="mt-2 small text-info fw-bold">
+                            <i class="bi bi-check-circle-fill me-1"></i> Cupón activo: <strong>{{ cupon_info.codigo }}</strong> ({{ cupon_info.etiqueta }})
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="cart-footer-bar" id="cartFooterBar">
+                    <!-- Selector de Método de Pago -->
+                    <div class="mb-3">
+                        <label class="text-white-50 small text-uppercase fw-bold d-block mb-1">
+                            <i class="bi bi-credit-card-2-front text-info me-1"></i> Selecciona Método de Pago:
+                        </label>
+                        <div class="payment-methods-grid">
+                            <label class="payment-option-card active">
+                                <input type="radio" name="metodo_pago_sel" value="Webpay Plus (Tarjeta Débito/Crédito)" checked class="d-none">
+                                <i class="bi bi-credit-card-fill text-warning fs-5"></i>
+                                <div>
+                                    <div class="fw-bold small text-white">Webpay Plus</div>
+                                    <div class="text-white-50" style="font-size: 0.68rem;">Débito / Crédito Transbank</div>
+                                </div>
+                            </label>
+                            <label class="payment-option-card">
+                                <input type="radio" name="metodo_pago_sel" value="Transferencia Bancaria Inmediata" class="d-none">
+                                <i class="bi bi-bank2 text-info fs-5"></i>
+                                <div>
+                                    <div class="fw-bold small text-white">Transferencia</div>
+                                    <div class="text-white-50" style="font-size: 0.68rem;">Banco Estado / Santander / Chile</div>
+                                </div>
+                            </label>
+                            <label class="payment-option-card">
+                                <input type="radio" name="metodo_pago_sel" value="Retiro en Tienda Ocean Drive" class="d-none">
+                                <i class="bi bi-shop text-success fs-5"></i>
+                                <div>
+                                    <div class="fw-bold small text-white">Retiro en Tienda</div>
+                                    <div class="text-white-50" style="font-size: 0.68rem;">Pago en mesón Vice City HQ</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                        <div>
+                            <div class="d-flex align-items-baseline gap-2">
+                                <div class="text-white-50 small text-uppercase fw-bold" style="letter-spacing: 1px;">Total a Pagar</div>
+                                {% if descuento_cupon > 0 %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle small" id="discountBadge">
+                                        Descuento: -${{ descuento_cupon }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <div class="total-amount-box" id="cartTotalBox">${{ total_carrito }}</div>
+                            {% if not user.is_authenticated %}
+                                <div class="text-info small mt-1">
+                                    <i class="bi bi-shield-lock-fill me-1"></i> Tus productos están guardados. Al hacer la compra te pedirá iniciar sesión.
+                                </div>
+                            {% else %}
+                                <div class="text-white-50 small mt-1">
+                                    <i class="bi bi-shield-check text-warning me-1"></i> Sesión activa como <strong>{{ user.username }}</strong>. Listo para procesar.
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            {% if user.is_authenticated %}
+                                {% if user.is_superuser %}
+                                    <div class="p-3 rounded-4 text-center" style="background: rgba(255, 75, 75, 0.12); border: 1.5px solid rgba(255, 75, 75, 0.45); max-width: 320px;">
+                                        <div class="text-danger fw-bold small mb-1">
+                                            <i class="bi bi-shield-lock-fill me-1"></i> Modo Administrador
+                                        </div>
+                                        <div class="text-white-50" style="font-size: 0.74rem;">
+                                            El administrador no puede realizar compras ni emitir pedidos personales.
+                                        </div>
+                                        <a href="{% url 'panel_admin' %}" class="btn btn-sm btn-outline-info rounded-pill px-3 mt-2 fw-bold" style="font-size: 0.75rem;">
+                                            <i class="bi bi-graph-up-arrow me-1"></i> Ver Dashboard Admin
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <form method="post" id="checkoutForm" class="m-0">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="metodo_pago" id="checkoutPaymentMethod" value="Webpay Plus (Tarjeta Débito/Crédito)">
+                                        <button type="submit" class="btn-confirm-order w-100">
+                                            <i class="bi bi-check2-circle fs-5 me-2"></i> Confirmar Compra y Pagar
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'login' %}?next={% url 'ver_carrito' %}" class="btn-confirm-order w-100">
+                                    <i class="bi bi-box-arrow-in-right fs-5 me-2"></i> Hacer la Compra (Iniciar Sesión)
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal / Overlay Animado de Confirmación de Compra con Temática GTA VI -->
+    <div class="checkout-overlay {% if compra_exitosa %}show{% endif %}" id="checkoutOverlay">
+        <!-- Sirena policial + Ráfagas de disparos cruzando de un lado a otro -->
+        <div class="gta-siren-glow"></div>
+        <div class="bullet-tracer tracer-ltr tracer-1"></div>
+        <div class="bullet-tracer tracer-rtl tracer-2"></div>
+        <div class="bullet-tracer tracer-ltr tracer-3"></div>
+        <div class="bullet-tracer tracer-rtl tracer-4"></div>
+        <div class="bullet-tracer tracer-ltr tracer-5"></div>
+
+        <!-- Chispas de impacto de bala -->
+        <div class="bullet-spark spark-a"></div>
+        <div class="bullet-spark spark-b"></div>
+        <div class="bullet-spark spark-c"></div>
+        <div class="bullet-spark spark-d"></div>
+
+        <div class="checkout-modal-card">
+            
+            <!-- Fase 1: Confirmando Compra... (Logo de GTA VI cargando poco a poco) -->
+            <div id="phaseConfirming" {% if compra_exitosa %}style="display: none;"{% endif %}>
+                <!-- 5 Estrellas Wanted Level GTA VI -->
+                <div class="wanted-stars-bar">
+                    <i class="bi bi-star-fill wanted-star"></i>
+                    <i class="bi bi-star-fill wanted-star"></i>
+                    <i class="bi bi-star-fill wanted-star"></i>
+                    <i class="bi bi-star-fill wanted-star"></i>
+                    <i class="bi bi-star-fill wanted-star"></i>
+                </div>
+
+                <!-- Logo Oficial GTA VI cargando poco a poco de abajo hacia arriba -->
+                <div class="gta6-logo-loader-wrap">
+                    <!-- Capa 1: Silueta base apagada -->
+                    <div class="gta6-logo-layer-empty">
+                        <svg viewBox="0 0 260 190" class="gta6-logo-svg" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Número Romano VI -->
+                            <g stroke="#f152a4" stroke-width="4" fill="rgba(255,255,255,0.06)">
+                                <polygon points="22,18 66,18 100,126 134,18 176,18 118,174 80,174"/>
+                                <rect x="184" y="18" width="46" height="156" rx="4"/>
+                            </g>
+                            <!-- Cinta central GTA -->
+                            <rect x="38" y="76" width="184" height="36" rx="6" fill="#120b1e" stroke="#49c4c4" stroke-width="2.5"/>
+                            <text x="130" y="101" text-anchor="middle" fill="#ffffff" font-family="Montserrat, sans-serif" font-weight="900" font-style="italic" font-size="22" letter-spacing="4">GTA VI</text>
+                        </svg>
+                    </div>
+
+                    <!-- Capa 2: Relleno Vice City que sube de 0% a 100% poco a poco -->
+                    <div class="gta6-logo-layer-fill" id="gta6LogoFillLayer">
+                        <svg viewBox="0 0 260 190" class="gta6-logo-svg" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="gta6SunsetGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#3c096c"/>
+                                    <stop offset="38%" stop-color="#f152a4"/>
+                                    <stop offset="75%" stop-color="#f58426"/>
+                                    <stop offset="100%" stop-color="#ffd166"/>
+                                </linearGradient>
+                                <linearGradient id="gta6BorderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#ffffff"/>
+                                    <stop offset="50%" stop-color="#ff9bd0"/>
+                                    <stop offset="100%" stop-color="#49c4c4"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Número Romano VI con Degradado Vice City -->
+                            <g stroke="url(#gta6BorderGrad)" stroke-width="5" fill="url(#gta6SunsetGrad)">
+                                <polygon points="22,18 66,18 100,126 134,18 176,18 118,174 80,174"/>
+                                <rect x="184" y="18" width="46" height="156" rx="4"/>
+                            </g>
+                            <!-- Líneas de horizonte / palmeras estilizadas dentro del VI -->
+                            <line x1="25" y1="138" x2="230" y2="138" stroke="rgba(20,10,35,0.45)" stroke-width="3"/>
+                            <line x1="25" y1="150" x2="230" y2="150" stroke="rgba(20,10,35,0.55)" stroke-width="4"/>
+                            <line x1="25" y1="162" x2="230" y2="162" stroke="rgba(20,10,35,0.65)" stroke-width="5"/>
+                            <!-- Cinta central GTA VI -->
+                            <rect x="34" y="74" width="192" height="38" rx="7" fill="#0d0818" stroke="#ffffff" stroke-width="3"/>
+                            <text x="130" y="100" text-anchor="middle" fill="#ffffff" font-family="Montserrat, sans-serif" font-weight="900" font-style="italic" font-size="23" letter-spacing="4">GTA VI</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Porcentaje cargando poco a poco -->
+                <div>
+                    <span class="gta6-percent-badge" id="gta6PercentCounter">0%</span>
+                </div>
+
+                <h2 class="modal-title-gta">Confirmando compra...</h2>
+                <p class="text-white-50 small mb-2">
+                    Cargando logo de autorización en Vice City HQ...
+                </p>
+                <div class="gta-progress-track">
+                    <div class="gta-progress-fill" id="checkoutProgressBar"></div>
+                </div>
+                <div class="text-info small fw-bold mt-2" style="letter-spacing: 1.5px; text-transform: uppercase; font-size: 0.75rem;">
+                    <i class="bi bi-lightning-charge-fill me-1"></i> Procesando compra paso a paso
+                </div>
+            </div>
+
+            <!-- Fase 2: ¡Se confirmó la compra! (Logo GTA VI al 100% + Compra con Éxito) -->
+            <div id="phaseSuccess" {% if not compra_exitosa %}style="display: none;"{% endif %}>
+                <div class="wanted-stars-bar">
+                    <i class="bi bi-star-fill text-warning fs-4"></i>
+                    <i class="bi bi-star-fill text-warning fs-4"></i>
+                    <i class="bi bi-star-fill text-warning fs-4"></i>
+                    <i class="bi bi-star-fill text-warning fs-4"></i>
+                    <i class="bi bi-star-fill text-warning fs-4"></i>
+                </div>
+
+                <!-- Logo GTA VI Completado al 100% -->
+                <div class="gta6-logo-layer-completed">
+                    <svg viewBox="0 0 260 190" class="gta6-logo-svg" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="gta6SunsetGradSuccess" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#3c096c"/>
+                                <stop offset="38%" stop-color="#f152a4"/>
+                                <stop offset="75%" stop-color="#f58426"/>
+                                <stop offset="100%" stop-color="#ffd166"/>
+                            </linearGradient>
+                        </defs>
+                        <g stroke="#ffffff" stroke-width="5" fill="url(#gta6SunsetGradSuccess)">
+                            <polygon points="22,18 66,18 100,126 134,18 176,18 118,174 80,174"/>
+                            <rect x="184" y="18" width="46" height="156" rx="4"/>
+                        </g>
+                        <rect x="34" y="74" width="192" height="38" rx="7" fill="#0d0818" stroke="#49c4c4" stroke-width="3"/>
+                        <text x="130" y="100" text-anchor="middle" fill="#49c4c4" font-family="Montserrat, sans-serif" font-weight="900" font-style="italic" font-size="21" letter-spacing="3">✓ GTA VI</text>
+                    </svg>
+                </div>
+
+                <div class="text-warning fw-bold small text-uppercase mb-1" style="letter-spacing: 3px;">
+                    ★ Mission Passed — 100% Completado ★
+                </div>
+                <h2 class="modal-title-success">¡Se Confirmó la Compra!</h2>
+                <p class="text-light mb-2 fw-semibold">
+                    Tu pedido <span class="badge badge-categoria ms-1" id="orderIdBadge">{% if ultima_compra %}#{{ ultima_compra.id }}{% endif %}</span> se ha confirmado con éxito.
+                </p>
+                <p class="text-white-50 small mb-4">
+                    Todos tus productos han sido descontados de inventario y guardados en tu <strong>Historial de Compras</strong>.
+                </p>
+                <div class="d-flex flex-column sm-row gap-2">
+                    <a href="{% if ultima_compra %}{% url 'ver_boleta' ultima_compra.id %}{% else %}#{% endif %}" id="successBoletaLink" class="btn btn-outline-info w-100 py-2 fw-bold rounded-pill mb-1">
+                        <i class="bi bi-receipt-cutoff me-2"></i> Ver Estado de Compra y Boleta
+                    </a>
+                    <a href="{% url 'historial_compras' %}" class="btn-confirm-order-blue w-100 py-3">
+                        <i class="bi bi-clock-history me-2"></i> Ver Historial de Compras
+                    </a>
+                    <a href="{% url 'buscar_productos' %}" class="btn-return w-100 justify-content-center py-2 mt-1">
+                        <i class="bi bi-arrow-left me-1"></i> Seguir Comprando
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Neón -->
+    <div class="footer-neon-divider"></div>
+    <footer class="footer-gta">
+        <div class="container">
+            <span class="small text-white-50">© 2026 <strong>Ferretería VI</strong> — Todos los derechos reservados. Estilo Vice City.</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS + Script de Animación de Compra y Menú 3 Líneas -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const checkoutForm = document.getElementById("checkoutForm");
+            const checkoutOverlay = document.getElementById("checkoutOverlay");
+            const phaseConfirming = document.getElementById("phaseConfirming");
+            const phaseSuccess = document.getElementById("phaseSuccess");
+            const progressBar = document.getElementById("checkoutProgressBar");
+            const orderIdBadge = document.getElementById("orderIdBadge");
+            const gta6LogoFillLayer = document.getElementById("gta6LogoFillLayer");
+            const gta6PercentCounter = document.getElementById("gta6PercentCounter");
+
+            if (checkoutForm) {
+                checkoutForm.addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    // Mostrar Overlay en Fase 1: "Confirmando compra..." con logo en 0%
+                    phaseConfirming.style.display = "block";
+                    phaseSuccess.style.display = "none";
+                    checkoutOverlay.classList.add("show");
+
+                    if (progressBar) progressBar.style.width = "0%";
+                    if (gta6LogoFillLayer) gta6LogoFillLayer.style.clipPath = "inset(100% 0 0 0)";
+                    if (gta6PercentCounter) gta6PercentCounter.textContent = "0%";
+
+                    const formData = new FormData(checkoutForm);
+
+                    // Enviar petición POST en paralelo
+                    const fetchPromise = fetch(window.location.href, {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    }).then(res => res.json()).catch(() => ({ ok: true }));
+
+                    // Animar el logo de GTA VI cargando poco a poco de 0% a 100%
+                    const progressiveLoadPromise = new Promise(resolve => {
+                        let currentPercent = 0;
+                        const interval = setInterval(() => {
+                            currentPercent += 2;
+                            if (currentPercent > 100) currentPercent = 100;
+
+                            const topInset = 100 - currentPercent;
+                            if (gta6LogoFillLayer) {
+                                gta6LogoFillLayer.style.clipPath = `inset(${topInset}% 0 0 0)`;
+                            }
+                            if (progressBar) {
+                                progressBar.style.width = `${currentPercent}%`;
+                            }
+                            if (gta6PercentCounter) {
+                                gta6PercentCounter.textContent = `${currentPercent}%`;
+                            }
+
+                            if (currentPercent >= 100) {
+                                clearInterval(interval);
+                                setTimeout(resolve, 250);
+                            }
+                        }, 42);
+                    });
+
+                    Promise.all([fetchPromise, progressiveLoadPromise]).then(([data]) => {
+                        if (data && data.redirect) {
+                            window.location.href = data.redirect;
+                            return;
+                        }
+                        if (data && data.compra_id && orderIdBadge) {
+                            orderIdBadge.textContent = "#" + data.compra_id;
+                        }
+                        if (data && data.boleta_url) {
+                            const boletaLink = document.getElementById("successBoletaLink");
+                            if (boletaLink) boletaLink.href = data.boleta_url;
+                        }
+
+                        // Pasar a Fase 2: "¡Se Confirmó la Compra!"
+                        if (window.playGtaMissionSound) window.playGtaMissionSound();
+                        phaseConfirming.style.display = "none";
+                        phaseSuccess.style.display = "block";
+
+                        // Vaciar visualmente el carrito detrás del modal
+                        const cartItemsList = document.getElementById("cartItemsList");
+                        const cartFooterBar = document.getElementById("cartFooterBar");
+                        const couponSection = document.getElementById("couponSection");
+                        if (couponSection) couponSection.style.display = "none";
+                        if (cartFooterBar) cartFooterBar.style.display = "none";
+                        if (cartItemsList) {
+                            cartItemsList.innerHTML = `
+                                <div class="empty-cart-state">
+                                    <div class="empty-icon-glow">✅</div>
+                                    <h3 class="fw-bold text-white mb-2">¡Se Confirmó la Compra!</h3>
+                                    <p class="text-white-50 mb-4">Tu compra fue registrada exitosamente en tu historial.</p>
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <a href="${data.boleta_url || '#'}" class="btn btn-outline-info rounded-pill px-4 py-2 fw-bold">
+                                            <i class="bi bi-receipt-cutoff me-1"></i> Ver Estado de Compra y Boleta
+                                        </a>
+                                        <a href="{% url 'historial_compras' %}" class="btn-confirm-order-blue">
+                                            <i class="bi bi-clock-history me-2"></i> Ver Historial de Compras
+                                        </a>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+            }
+
+            // Selector de Método de Pago interactivo
+            document.querySelectorAll('.payment-option-card').forEach(function(card) {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-option-card').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.checked = true;
+                        const hidden = document.getElementById('checkoutPaymentMethod');
+                        if (hidden) hidden.value = radio.value;
+                    }
+                });
+            });
+
+            // Cupones Rápidos al hacer clic en las pastillas sugeridas
+            document.querySelectorAll('.js-quick-coupon').forEach(function(pill) {
+                pill.addEventListener('click', function() {
+                    const input = document.getElementById('couponInput');
+                    const form = document.getElementById('couponForm');
+                    if (input && form) {
+                        input.value = this.getAttribute('data-code');
+                        form.submit();
+                    }
+                });
+            });
+
+            // Botones + y - interactivos con AJAX en el Carrito
+            document.querySelectorAll('.js-qty-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (window.playGtaCashSound) window.playGtaCashSound();
+                    const url = this.getAttribute('data-url');
+                    const action = this.getAttribute('data-action');
+                    const pid = this.getAttribute('data-pid');
+                    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '';
+
+                    const formData = new FormData();
+                    formData.append('accion', action);
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': csrfToken
+                        }
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.ok) {
+                            if (data.eliminado) {
+                                window.location.reload();
+                                return;
+                            }
+                            const qtyVal = document.getElementById(`qtyVal-${pid}`);
+                            const subtotalVal = document.getElementById(`subtotalVal-${pid}`);
+                            if (qtyVal) qtyVal.textContent = data.cantidad;
+                            if (subtotalVal) subtotalVal.textContent = `$${data.item_subtotal}`;
+
+                            const cartTotalBox = document.getElementById('cartTotalBox');
+                            if (cartTotalBox) cartTotalBox.textContent = `$${data.total_carrito}`;
+
+                            const navCartBadge = document.getElementById('navCartBadge');
+                            if (navCartBadge) {
+                                navCartBadge.textContent = data.cart_count;
+                                navCartBadge.style.display = data.cart_count > 0 ? 'inline-block' : 'none';
+                            }
+                            const discountBadge = document.getElementById('discountBadge');
+                            if (discountBadge && data.descuento > 0) {
+                                discountBadge.textContent = `Descuento: -$${data.descuento}`;
+                            }
+                        }
+                    })
+                    .catch(() => window.location.reload());
+                });
+            });
+        });
+    </script>
+</body>
+</html>

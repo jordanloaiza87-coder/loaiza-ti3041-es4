@@ -1,0 +1,210 @@
+<style>
+    /* Widget de Autocompletado en Vivo Vice City */
+    .gta-autocomplete-dropdown {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        background: rgba(14, 10, 24, 0.98);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1.5px solid rgba(241, 82, 164, 0.55);
+        border-radius: 16px;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85), 0 0 22px rgba(241, 82, 164, 0.25);
+        z-index: 2500;
+        overflow: hidden;
+        display: none;
+    }
+
+    .gta-autocomplete-dropdown.show {
+        display: block;
+    }
+
+    .gta-ac-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: #ffffff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        transition: background 0.2s ease;
+    }
+
+    .gta-ac-item:last-child {
+        border-bottom: none;
+    }
+
+    .gta-ac-item:hover {
+        background: rgba(241, 82, 164, 0.18);
+        color: #ffffff;
+    }
+
+    .gta-ac-thumb {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        object-fit: cover;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(73, 196, 196, 0.35);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .gta-ac-title {
+        font-weight: 800;
+        font-size: 0.86rem;
+        color: #ffffff;
+        margin-bottom: 2px;
+    }
+
+    .gta-ac-cat {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #49c4c4;
+    }
+
+    .gta-ac-price {
+        font-weight: 900;
+        font-size: 0.92rem;
+        color: #fff685;
+        white-space: nowrap;
+    }
+
+    /* Botón de Favorito ❤️ en Tarjetas */
+    .btn-fav-card {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(14, 10, 24, 0.82);
+        border: 1.5px solid rgba(241, 82, 164, 0.45);
+        color: rgba(255, 255, 255, 0.75);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        z-index: 5;
+        text-decoration: none;
+    }
+
+    .btn-fav-card:hover,
+    .btn-fav-card.is-fav {
+        background: rgba(241, 82, 164, 0.25);
+        border-color: #f152a4;
+        color: #ff4d94 !important;
+        box-shadow: 0 0 14px rgba(241, 82, 164, 0.6);
+        transform: scale(1.08);
+    }
+</style>
+
+<script>
+if (!window._gtaAutocompleteLoaded) {
+window._gtaAutocompleteLoaded = true;
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Autocompletado en Vivo para cualquier barra de búsqueda input[name="q"]
+    const searchInputs = document.querySelectorAll('input[name="q"]');
+    searchInputs.forEach(function(input) {
+        const form = input.closest('form');
+        if (!form) return;
+        form.style.position = 'relative';
+
+        const dropdown = document.createElement('div');
+        dropdown.className = 'gta-autocomplete-dropdown';
+        form.appendChild(dropdown);
+
+        let debounceTimer = null;
+        input.addEventListener('input', function() {
+            const q = input.value.trim();
+            clearTimeout(debounceTimer);
+            if (q.length < 2) {
+                dropdown.classList.remove('show');
+                dropdown.innerHTML = '';
+                return;
+            }
+            debounceTimer = setTimeout(function() {
+                fetch(`{% url 'api_autocompletar' %}?q=${encodeURIComponent(q)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (!data.resultados || data.resultados.length === 0) {
+                            dropdown.innerHTML = `
+                                <div class="p-3 text-center text-white-50 small">
+                                    Sin coincidencias directas para "<strong>${q}</strong>"
+                                </div>`;
+                            dropdown.classList.add('show');
+                            return;
+                        }
+                        let html = '';
+                        data.resultados.forEach(item => {
+                            const thumbHtml = item.imagen
+                                ? `<img src="${item.imagen}" class="gta-ac-thumb" alt="${item.nombre}">`
+                                : `<div class="gta-ac-thumb">🛠️</div>`;
+                            html += `
+                                <a href="${item.url}" class="gta-ac-item">
+                                    <div class="d-flex align-items-center gap-2 overflow-hidden">
+                                        ${thumbHtml}
+                                        <div class="text-truncate">
+                                            <div class="gta-ac-title text-truncate">${item.nombre}</div>
+                                            <div class="gta-ac-cat">${item.categoria} • Stock: ${item.stock}</div>
+                                        </div>
+                                    </div>
+                                    <div class="gta-ac-price">$${item.precio}</div>
+                                </a>`;
+                        });
+                        html += `
+                            <a href="{% url 'buscar_productos' %}?q=${encodeURIComponent(q)}" class="gta-ac-item justify-content-center text-info small fw-bold py-2">
+                                <i class="bi bi-search me-1"></i> Ver todos los resultados para "${q}"
+                            </a>`;
+                        dropdown.innerHTML = html;
+                        dropdown.classList.add('show');
+                    })
+                    .catch(() => {});
+            }, 180);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!form.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    });
+
+    // 2. Toggle Favoritos ❤️ vía AJAX sin recargar la página
+    document.querySelectorAll('.js-fav-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = form.querySelector('.btn-fav-card');
+            const icon = form.querySelector('i');
+            const csrfInput = form.querySelector('input[name="csrfmiddlewaretoken"]');
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfInput ? csrfInput.value : ''
+                }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok && btn) {
+                    btn.classList.toggle('is-fav', data.es_favorito);
+                    if (icon) {
+                        icon.className = data.es_favorito ? 'bi bi-heart-fill' : 'bi bi-heart';
+                    }
+                    const favBadge = document.getElementById('menuFavBadgeCount');
+                    if (favBadge) {
+                        favBadge.textContent = data.fav_count;
+                    }
+                }
+            })
+            .catch(() => form.submit());
+        });
+    });
+});
+}
+</script>
