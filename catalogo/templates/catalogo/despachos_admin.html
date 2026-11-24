@@ -1,5 +1,5 @@
 {% extends 'catalogo/base.html' %}
-{% load static %}
+{% load static formato %}
 
 {% block title %}Gestión de Despachos y Envíos - Ferreterías VI Admin{% endblock %}
 
@@ -107,11 +107,133 @@
         border-color: var(--gta-teal) !important;
         box-shadow: 0 0 12px rgba(73, 196, 196, 0.5) !important;
     }
+
+    @media (max-width: 768px) {
+        .dispatch-header-card {
+            padding: 16px 14px !important;
+            border-radius: 16px !important;
+            margin-bottom: 16px !important;
+        }
+        .dispatch-page-title {
+            font-size: 1.35rem !important;
+        }
+        .dispatch-top-actions {
+            width: 100%;
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px !important;
+        }
+        .stat-pill-box {
+            padding: 10px 12px !important;
+            gap: 10px !important;
+            border-radius: 14px !important;
+        }
+        .stat-icon-circle {
+            width: 34px !important;
+            height: 34px !important;
+            font-size: 1.05rem !important;
+        }
+        .stat-pill-box .fs-4 {
+            font-size: 1.2rem !important;
+        }
+        .dispatch-filters-bar {
+            padding: 12px !important;
+            gap: 10px !important;
+        }
+        .dispatch-filter-tabs {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            width: 100%;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .dispatch-filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .filter-tab-btn {
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-size: 0.74rem;
+            padding: 5px 11px;
+        }
+        .dispatch-search-form,
+        .dispatch-search-form .input-group {
+            width: 100% !important;
+        }
+        .dispatch-table-card {
+            padding: 12px !important;
+            border-radius: 16px !important;
+        }
+        /* Convertir tabla de 7 columnas en tarjetas verticales táctiles en celular */
+        .dispatch-responsive-table thead {
+            display: none;
+        }
+        .dispatch-responsive-table tbody,
+        .dispatch-responsive-table tr,
+        .dispatch-responsive-table td {
+            display: block;
+            width: 100%;
+        }
+        .dispatch-responsive-table tr {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(241, 82, 164, 0.35);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .dispatch-responsive-table td {
+            border: none !important;
+            padding: 5px 0 !important;
+            text-align: left !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .dispatch-responsive-table td::before {
+            content: attr(data-label);
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.6px;
+        }
+        .dispatch-responsive-table td.td-estado-mobile {
+            flex-direction: column;
+            align-items: stretch;
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1) !important;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1) !important;
+            margin: 4px 0;
+        }
+        .dispatch-responsive-table td.td-estado-mobile > div {
+            flex-direction: column;
+            align-items: stretch !important;
+            width: 100%;
+        }
+        .select-estado-gta {
+            width: 100% !important;
+            min-width: 0 !important;
+            padding: 8px 10px !important;
+            font-size: 0.84rem !important;
+        }
+        #adminToastBox {
+            left: 12px !important;
+            right: 12px !important;
+            bottom: 14px !important;
+        }
+        #adminToastBox > div {
+            min-width: 0 !important;
+            width: 100% !important;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="container py-3">
+<div class="container py-2 py-md-3">
 
     <!-- Encabezado Principal de la Página de Despachos -->
     <div class="dispatch-header-card">
@@ -125,7 +247,7 @@
                         <i class="bi bi-truck me-1"></i> Módulo Exclusivo
                     </span>
                 </div>
-                <h1 class="fw-black text-white m-0" style="font-weight: 900; font-size: 2.1rem; letter-spacing: 0.5px;">
+                <h1 class="fw-black text-white m-0 dispatch-page-title" style="font-weight: 900; font-size: 2.1rem; letter-spacing: 0.5px;">
                     🚚 Centro de Gestión de Despachos y Envíos
                 </h1>
                 <div class="text-white-50 small mt-1">
@@ -133,12 +255,12 @@
                 </div>
             </div>
 
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{% url 'panel_admin' %}" class="btn btn-outline-info rounded-pill px-3 py-2 fw-bold btn-sm">
-                    <i class="bi bi-speedometer2 me-1"></i> Volver al Dashboard
+            <div class="d-flex flex-wrap gap-2 dispatch-top-actions">
+                <a href="{% url 'panel_admin' %}" class="btn btn-outline-info rounded-pill px-3 py-2 fw-bold btn-sm text-center">
+                    <i class="bi bi-speedometer2 me-1"></i> Dashboard
                 </a>
-                <a href="{% url 'buscar_productos' %}" class="btn btn-outline-light rounded-pill px-3 py-2 fw-bold btn-sm">
-                    <i class="bi bi-grid-fill me-1"></i> Ver Catálogo
+                <a href="{% url 'buscar_productos' %}" class="btn btn-outline-light rounded-pill px-3 py-2 fw-bold btn-sm text-center">
+                    <i class="bi bi-grid-fill me-1"></i> Catálogo
                 </a>
             </div>
         </div>
@@ -208,9 +330,9 @@
     </div>
 
     <!-- Barra de Filtros Rápidos y Buscador -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 p-3 rounded-4" style="background: rgba(20, 14, 34, 0.7); border: 1px solid rgba(255,255,255,0.08);">
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-            <span class="text-white-50 small fw-bold me-1">Filtrar por:</span>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 p-3 rounded-4 dispatch-filters-bar" style="background: rgba(20, 14, 34, 0.7); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="d-flex flex-wrap gap-2 align-items-center dispatch-filter-tabs">
+            <span class="text-white-50 small fw-bold me-1 d-none d-sm-inline">Filtrar por:</span>
             <a href="{% url 'gestion_despachos' %}?filtro=todos{% if q %}&q={{ q|urlencode }}{% endif %}" class="filter-tab-btn {% if filtro_actual == 'todos' %}active{% endif %}">
                 Todos ({{ total_pedidos }})
             </a>
@@ -231,7 +353,7 @@
             </a>
         </div>
 
-        <form method="get" class="d-flex align-items-center gap-2 m-0">
+        <form method="get" class="d-flex align-items-center gap-2 m-0 dispatch-search-form">
             {% if filtro_actual %}<input type="hidden" name="filtro" value="{{ filtro_actual }}">{% endif %}
             <div class="input-group input-group-sm" style="width: 250px;">
                 <input type="text" name="q" value="{{ q }}" class="form-control bg-dark text-white border-secondary" placeholder="Buscar #folio o usuario...">
@@ -250,7 +372,7 @@
     <!-- Tabla Principal de Gestión de Despachos -->
     <div class="dispatch-table-card">
         <div class="table-responsive">
-            <table class="table table-dark table-hover align-middle mb-0">
+            <table class="table table-dark table-hover align-middle mb-0 dispatch-responsive-table">
                 <thead>
                     <tr class="text-white-50 small text-uppercase" style="letter-spacing: 0.8px;">
                         <th>Folio</th>
@@ -265,29 +387,30 @@
                 <tbody>
                     {% for c in compras %}
                     <tr id="rowCompra-{{ c.id }}">
-                        <td class="fw-bold text-info" style="font-size: 0.95rem;">
+                        <td data-label="Folio" class="fw-bold text-info" style="font-size: 0.95rem;">
                             #000{{ c.id }}
                         </td>
-                        <td>
-                            <div class="fw-bold text-white">{{ c.usuario.username }}</div>
-                            <div class="text-white-50 small" style="font-size: 0.72rem;">{{ c.usuario.email|default:"Sin correo registrado" }}</div>
+                        <td data-label="Cliente">
+                            <div class="text-end text-md-start">
+                                <div class="fw-bold text-white">{{ c.usuario.username }}</div>
+                                <div class="text-white-50 small" style="font-size: 0.72rem;">{{ c.usuario.email|default:"Sin correo registrado" }}</div>
+                            </div>
                         </td>
-                        <td class="small text-white-50">
-                            {{ c.fecha|date:"d/m/Y" }}<br>
-                            <span class="text-info fw-semibold">{{ c.fecha|date:"H:i" }} hrs</span>
+                        <td data-label="Fecha" class="small text-white-50">
+                            <span>{{ c.fecha|date:"d/m/Y" }} · <span class="text-info fw-semibold">{{ c.fecha|date:"H:i" }} hrs</span></span>
                         </td>
-                        <td>
+                        <td data-label="Modalidad">
                             {% if c.is_retiro %}
                                 <span class="badge bg-success-subtle text-success border border-success border-opacity-50 px-2 py-1">
-                                    <i class="bi bi-shop me-1"></i> Retiro en Tienda Ocean Drive
+                                    <i class="bi bi-shop me-1"></i> Retiro en Tienda
                                 </span>
                             {% else %}
                                 <span class="badge bg-info-subtle text-info border border-info border-opacity-50 px-2 py-1">
-                                    <i class="bi bi-truck me-1"></i> Despacho Domicilio Vice City
+                                    <i class="bi bi-truck me-1"></i> Despacho Domicilio
                                 </span>
                             {% endif %}
                         </td>
-                        <td>
+                        <td data-label="Estado de Despacho" class="td-estado-mobile">
                             <div class="d-flex align-items-center gap-2">
                                 <select class="form-select form-select-sm bg-dark text-white border-secondary fw-semibold select-estado-gta"
                                         id="selectEstado-{{ c.id }}"
@@ -311,10 +434,10 @@
                                 </span>
                             </div>
                         </td>
-                        <td class="text-end fw-bold text-warning" style="font-size: 1rem;">
-                            ${{ c.total }}
+                        <td data-label="Total Pagado" class="text-end fw-bold text-warning" style="font-size: 1rem;">
+                            {{ c.total|clp }}
                         </td>
-                        <td class="text-end">
+                        <td data-label="Comprobante" class="text-end">
                             <a href="{% url 'ver_boleta' c.id %}" class="btn btn-sm btn-outline-info rounded-pill px-3 fw-bold" title="Ver Boleta Oficial">
                                 <i class="bi bi-file-earmark-text me-1"></i> Boleta
                             </a>

@@ -1,4 +1,4 @@
-{% load static %}
+{% load static formato %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -65,13 +65,37 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            transition: opacity 0.55s ease, visibility 0.55s ease;
+            clip-path: inset(0 0 0 0);
+            transition: clip-path 0.95s cubic-bezier(0.77, 0, 0.18, 1), visibility 0s linear 0.95s;
         }
 
-        .gta-loader-screen.hidden-loader {
+        /* Contenido del loader: se aleja y desenfoca antes de abrir la cortina */
+        .gta-loader-screen > *:not(.gta-siren-glow) {
+            transition: opacity 0.45s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease;
+        }
+
+        .gta-loader-screen.loader-exit > *:not(.gta-siren-glow) {
             opacity: 0;
+            transform: scale(0.92) translateY(-12px);
+            filter: blur(6px);
+        }
+
+        /* Cortina: la pantalla se recoge hacia arriba revelando la página */
+        .gta-loader-screen.hidden-loader {
+            clip-path: inset(0 0 100% 0);
             visibility: hidden;
             pointer-events: none;
+        }
+
+        .loader-percent {
+            margin-top: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.65);
+            font-variant-numeric: tabular-nums;
+            z-index: 5;
         }
 
         /* Luces de sirena policial de Vice City en los bordes */
@@ -79,7 +103,7 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(90deg, rgba(255, 20, 80, 0.14) 0%, transparent 35%, transparent 65%, rgba(0, 180, 255, 0.14) 100%);
-            animation: sirenPulse 0.7s ease-in-out infinite alternate;
+            animation: sirenPulse 1.6s ease-in-out infinite alternate;
             pointer-events: none;
         }
 
@@ -193,49 +217,57 @@
             z-index: 5;
         }
 
+        /* Estrellas apagadas: se encienden una a una según el progreso real de carga */
         .wanted-star {
             font-size: 1.7rem;
-            color: #ffd166;
-            filter: drop-shadow(0 0 12px rgba(245, 132, 38, 0.85));
-            animation: starBlink 0.5s ease-in-out infinite alternate;
+            color: rgba(255, 255, 255, 0.14);
+            transform: scale(0.85);
+            transition: color 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease;
         }
 
-        .wanted-star:nth-child(2) { animation-delay: 0.1s; }
-        .wanted-star:nth-child(3) { animation-delay: 0.2s; }
-        .wanted-star:nth-child(4) { animation-delay: 0.3s; }
-        .wanted-star:nth-child(5) { animation-delay: 0.4s; }
+        .wanted-star.lit {
+            color: #ffd166;
+            transform: scale(1);
+            filter: drop-shadow(0 0 12px rgba(245, 132, 38, 0.85));
+            animation: starLit 0.5s ease-out;
+        }
 
-        @keyframes starBlink {
-            0% { transform: scale(0.92); opacity: 0.55; }
-            100% { transform: scale(1.12); opacity: 1; color: #ffffff; }
+        @keyframes starLit {
+            0% { transform: scale(1.5); color: #ffffff; filter: drop-shadow(0 0 22px #ffffff); }
+            100% { transform: scale(1); }
         }
 
         .loader-logo-title {
-            font-size: 3.2rem;
+            font-size: clamp(1.85rem, 8vw, 3.2rem);
             font-weight: 950;
             font-style: italic;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: clamp(1.5px, 0.8vw, 4px);
+            text-align: center;
+            white-space: nowrap;
+            padding: 0 14px;
             background: linear-gradient(to bottom, #ffffff 15%, var(--gta-pink) 60%, var(--gta-orange) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 25px rgba(241, 82, 164, 0.55));
             z-index: 5;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .loader-subtitle {
             color: var(--gta-teal);
-            font-size: 0.85rem;
+            font-size: clamp(0.65rem, 2.6vw, 0.85rem);
             font-weight: 800;
-            letter-spacing: 5px;
+            letter-spacing: clamp(1.8px, 0.8vw, 5px);
             text-transform: uppercase;
+            text-align: center;
+            padding: 0 16px;
             margin-bottom: 22px;
             z-index: 5;
         }
 
         .loader-bar-box {
-            width: 280px;
+            width: min(280px, 78vw);
             height: 7px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
@@ -249,12 +281,22 @@
             width: 0%;
             background: linear-gradient(90deg, var(--gta-pink), var(--gta-orange), var(--gta-teal));
             box-shadow: 0 0 15px var(--gta-pink);
-            animation: fillLoaderBar 1.1s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+            position: relative;
+            overflow: hidden;
         }
 
-        @keyframes fillLoaderBar {
-            0% { width: 0%; }
-            100% { width: 100%; }
+        /* Brillo que recorre la barra mientras carga */
+        .loader-bar-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+            transform: translateX(-100%);
+            animation: barShine 1.3s ease-in-out infinite;
+        }
+
+        @keyframes barShine {
+            100% { transform: translateX(100%); }
         }
 
         /* ----- Navbar Flotante y Botones GTA VI ----- */
@@ -511,6 +553,54 @@
             z-index: 1;
             transform-origin: top center;
             transform: scale(1.02);
+            will-change: transform, translate;
+        }
+
+        /* Entrada cinematográfica del hero: la cámara se aleja y la escena se ilumina */
+        .js-anim .hero-bg-image {
+            scale: 1.14;
+            filter: brightness(0.45) saturate(0.7);
+        }
+
+        .page-ready .hero-bg-image {
+            animation: heroCameraIn 2.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes heroCameraIn {
+            to { scale: 1; filter: brightness(1) saturate(1); }
+        }
+
+        .js-anim .hero-title,
+        .js-anim .hero-subtitle {
+            opacity: 0;
+        }
+
+        .page-ready .hero-title {
+            animation: heroTitleIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+        }
+
+        .page-ready .hero-subtitle {
+            animation: heroSubtitleIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+        }
+
+        @keyframes heroTitleIn {
+            0% {
+                opacity: 0;
+                transform: translateY(26px) scale(1.06);
+                letter-spacing: 28px;
+                filter: blur(14px) drop-shadow(0 0 25px rgba(241, 82, 164, 0));
+            }
+            100% {
+                opacity: 1;
+                transform: none;
+                letter-spacing: 4px;
+                filter: blur(0) drop-shadow(0 0 25px rgba(241, 82, 164, 0.45));
+            }
+        }
+
+        @keyframes heroSubtitleIn {
+            0% { opacity: 0; transform: translateY(14px); letter-spacing: 18px; filter: blur(6px); }
+            100% { opacity: 1; transform: none; filter: blur(0); }
         }
 
         .hero-overlay {
@@ -1695,6 +1785,41 @@
             letter-spacing: 0.5px;
         }
 
+        /* Botón principal de la portada (antes sin estilo: texto oscuro sobre fondo oscuro) */
+        .btn-gta {
+            background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
+            border: none;
+            color: #ffffff !important;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 18px rgba(241, 82, 164, 0.35);
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, filter 0.25s ease;
+        }
+
+        .btn-gta:hover,
+        .btn-gta:focus-visible {
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+            box-shadow: 0 8px 26px rgba(241, 82, 164, 0.55);
+        }
+
+        .btn-gta:active {
+            transform: translateY(0);
+        }
+
+        /* Insignias de confianza del footer */
+        .footer-trust-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
         /* Botones de Acción de Tarjeta */
         .btn-gta-primary {
             background: linear-gradient(135deg, var(--gta-pink) 0%, var(--gta-orange) 100%);
@@ -1855,15 +1980,36 @@
         }
 
         /* Animaciones reveal */
-        .reveal {
+        .js-anim .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transform: translateY(48px) scale(0.97);
+            filter: blur(8px);
+            transition:
+                opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+                transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms),
+                filter 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0ms);
         }
 
-        .reveal.active {
+        .js-anim .reveal.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: none;
+            filter: none;
+        }
+
+        /* Accesibilidad: sin animaciones para quien las desactiva en su sistema */
+        @media (prefers-reduced-motion: reduce) {
+            .js-anim .reveal,
+            .js-anim .hero-title,
+            .js-anim .hero-subtitle {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+                animation: none !important;
+                transition: none !important;
+            }
+            .js-anim .hero-bg-image { scale: 1; filter: none; animation: none !important; }
+            .gta-loader-screen, .gta-loader-screen * { animation: none !important; transition: none !important; }
+            .bullet-tracer, .bullet-spark { display: none; }
         }
 
         /* ----- Footer GTA VI ----- */
@@ -1998,31 +2144,70 @@
         }
 
         @media (max-width: 768px) {
-            .hero-title { font-size: 2.6rem; letter-spacing: 2px; }
-            .hero-subtitle { font-size: 0.85rem; letter-spacing: 3px; }
+            .hero-banner-section {
+                height: 62vh !important;
+                min-height: 410px !important;
+                padding-top: 98px !important;
+            }
+            .hero-content {
+                padding: 0 12px 60px 12px !important;
+            }
+            .hero-title {
+                font-size: clamp(1.9rem, 8.2vw, 2.7rem) !important;
+                letter-spacing: 1.5px !important;
+                line-height: 1.1 !important;
+                margin-bottom: 6px !important;
+            }
+            .hero-subtitle {
+                font-size: clamp(0.68rem, 2.8vw, 0.85rem) !important;
+                letter-spacing: 2px !important;
+                line-height: 1.35 !important;
+                padding: 0 8px !important;
+            }
+            .ml-cards-overlap-section {
+                margin-top: -38px !important;
+                margin-bottom: 40px !important;
+            }
             .apple-filter-container { justify-content: flex-start; }
-            .hero-banner-section { height: 68vh; min-height: 420px; }
             .hud-history-widget {
-                top: 76px;
-                right: 10px;
-                left: 10px;
-                width: auto;
-                max-width: calc(100vw - 20px);
+                top: 102px !important;
+                right: 10px !important;
+                left: auto !important;
+                width: 245px !important;
+                max-width: calc(100vw - 20px) !important;
+            }
+            .hud-history-widget.minimized {
+                width: 175px !important;
             }
             .nav-logo-gta {
                 height: 34px;
             }
             .navbar-top-row {
-                gap: 8px;
+                flex-wrap: wrap !important;
+                gap: 6px !important;
             }
+            .nav-search-wrapper,
             .ml-search-form {
-                order: 3;
-                flex: 1 1 100%;
-                max-width: 100%;
-                margin-top: 4px;
+                order: 3 !important;
+                flex: 1 1 100% !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-top: 4px !important;
             }
             .main-video-showcase-card {
-                border-radius: 18px;
+                border-radius: 16px !important;
+                padding: 16px 14px !important;
+                margin-bottom: 16px !important;
+            }
+            .flash-sale-banner {
+                padding: 14px !important;
+                gap: 12px !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            .flash-sale-banner > div:last-child {
+                justify-content: space-between !important;
+                width: 100% !important;
             }
             .cart-toast-gta {
                 left: 12px;
@@ -2033,14 +2218,17 @@
         }
 
         @media (max-width: 576px) {
-            .hero-title { font-size: 2.1rem; }
-            .hero-subtitle { font-size: 0.75rem; letter-spacing: 2px; }
+            .wanted-star { font-size: 1.35rem !important; }
             .user-badge-gta { padding: 4px 10px 4px 6px; font-size: 0.75rem; }
-            .btn-hamburger-gta { padding: 6px 10px; font-size: 0.78rem; }
+            .btn-hamburger-gta { padding: 5px 9px; font-size: 0.75rem; }
+            .ml-feature-card { padding: 14px 12px !important; }
+            .ml-card-visual { width: 56px !important; height: 56px !important; font-size: 1.5rem !important; }
+            .section-title-gta { font-size: 1.5rem !important; }
         }
     </style>
 </head>
 <body>
+    <script>document.documentElement.classList.add('js-anim');</script>
 
     <!-- PANTALLA DE CARGA GTA VI CON RÁFAGAS DE DISPAROS DE UN LADO A OTRO -->
     <div class="gta-loader-screen" id="gtaPageLoader">
@@ -2072,8 +2260,9 @@
         <div class="loader-subtitle">Cargando Arsenal Vice City...</div>
 
         <div class="loader-bar-box">
-            <div class="loader-bar-fill"></div>
+            <div class="loader-bar-fill" id="loaderBarFill"></div>
         </div>
+        <div class="loader-percent" id="loaderPercent">0%</div>
     </div>
 
     <!-- Navbar Flotante GTA VI con Opciones Minimizadas en el Botón de 3 Líneas -->
@@ -2102,7 +2291,7 @@
                     <div class="hud-order-item">
                         <div class="hud-order-top">
                             <span class="hud-order-badge">Orden #{{ compra.id }}</span>
-                            <span class="hud-order-total">${{ compra.total }}</span>
+                            <span class="hud-order-total">{{ compra.total|clp }}</span>
                         </div>
                         <div class="hud-order-products">
                             {% for det in compra.detalles.all %}
@@ -2126,7 +2315,7 @@
         </aside>
         {% endif %}
 
-        <div class="hero-content reveal" style="padding-bottom: 135px;">
+        <div class="hero-content" style="padding-bottom: 135px;">
             <h1 class="hero-title">Ferreterías VI</h1>
             <h6 class="hero-subtitle">Equipamiento Táctico & Herramientas</h6>
         </div>
@@ -2202,7 +2391,7 @@
         </div>
 
         <!-- Fila de 5 Casillas de Acceso Rápido (Estilo Mercado Libre, limpias y sin emojis) -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3">
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-2 g-sm-3">
 
             <!-- Casilla 1: Más vendidos -->
             <div class="col reveal">
@@ -2331,10 +2520,10 @@
                         Equipamiento táctico, herramientas de alto impacto y materiales de construcción premium con toda la estética y potencia de Vice City.
                     </p>
                     <div class="d-flex flex-wrap gap-2">
-                        <span class="badge bg-dark-subtle text-light border border-secondary border-opacity-25 px-2 py-2 small">
+                        <span class="footer-trust-badge">
                             <i class="bi bi-shield-check text-warning me-1"></i> Garantía Total
                         </span>
-                        <span class="badge bg-dark-subtle text-light border border-secondary border-opacity-25 px-2 py-2 small">
+                        <span class="footer-trust-badge">
                             <i class="bi bi-lightning-charge-fill text-info me-1"></i> Despacho Rápido
                         </span>
                     </div>
@@ -2429,26 +2618,92 @@
         document.addEventListener("DOMContentLoaded", function() {
 
             
-            // Ocultar pantalla de carga GTA VI después de mostrar las ráfagas de disparos
+            // ===== PANTALLA DE CARGA CON PROGRESO REAL =====
+            // La barra avanza según los recursos que realmente terminan de cargar
+            // (imagen del hero, fuentes e imágenes de la página), con un avance
+            // suavizado para que no salte de golpe.
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             const gtaPageLoader = document.getElementById('gtaPageLoader');
-            if (gtaPageLoader) {
+            const barFill = document.getElementById('loaderBarFill');
+            const percentEl = document.getElementById('loaderPercent');
+            const stars = gtaPageLoader ? gtaPageLoader.querySelectorAll('.wanted-star') : [];
+            const MIN_LOADER_MS = reduceMotion ? 0 : 1300;
+            const MAX_LOADER_MS = 4500;
+            const startTime = performance.now();
+
+            let pageRevealed = false;
+            function revealPage() {
+                if (pageRevealed) return;
+                pageRevealed = true;
+                if (gtaPageLoader) {
+                    gtaPageLoader.classList.add('loader-exit');
+                    setTimeout(() => gtaPageLoader.classList.add('hidden-loader'), reduceMotion ? 0 : 380);
+                }
+                // El hero y las secciones empiezan a animarse mientras se abre la cortina
                 setTimeout(() => {
-                    gtaPageLoader.classList.add('hidden-loader');
-                }, 1150);
-                // Respaldo de seguridad para que NUNCA se quede pegada
-                setTimeout(() => {
-                    gtaPageLoader.classList.add('hidden-loader');
-                }, 2500);
-                gtaPageLoader.addEventListener('click', () => {
-                    gtaPageLoader.classList.add('hidden-loader');
-                });
+                    document.body.classList.add('page-ready');
+                    startRevealObserver();
+                }, reduceMotion ? 0 : 520);
             }
 
-            // Toggle del HUD Lateral de Historial de Compras
+            // Recursos a esperar
+            const tasks = [];
+            const heroBgEl = document.getElementById('hero-bg');
+            const heroUrlMatch = heroBgEl && getComputedStyle(heroBgEl).backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+            if (heroUrlMatch) {
+                tasks.push(new Promise(res => { const im = new Image(); im.onload = im.onerror = res; im.src = heroUrlMatch[1]; }));
+            }
+            document.querySelectorAll('img').forEach(img => {
+                if (!img.complete) tasks.push(new Promise(res => { img.addEventListener('load', res, { once: true }); img.addEventListener('error', res, { once: true }); }));
+            });
+            if (document.fonts && document.fonts.ready) tasks.push(document.fonts.ready);
+
+            const totalTasks = Math.max(tasks.length, 1);
+            let doneTasks = tasks.length ? 0 : 1;
+            tasks.forEach(t => Promise.resolve(t).finally(() => { doneTasks++; }));
+
+            let shown = 0;
+            function tickLoader(now) {
+                const elapsed = now - startTime;
+                // Objetivo: lo realmente cargado, pero nunca más rápido que el tiempo mínimo
+                const realTarget = (doneTasks / totalTasks) * 100;
+                const timeCap = Math.min(100, (elapsed / MIN_LOADER_MS) * 100);
+                // Mientras falten recursos, la barra avanza lento hasta un 90% como máximo
+                const target = doneTasks >= totalTasks ? Math.min(realTarget, timeCap) : Math.min(90, Math.max(realTarget, elapsed / 60), timeCap);
+                shown += (target - shown) * 0.12;
+                if (target - shown < 0.4) shown = target;
+
+                if (barFill) barFill.style.width = shown.toFixed(1) + '%';
+                if (percentEl) percentEl.textContent = Math.round(shown) + '%';
+                stars.forEach((s, i) => { if (shown >= (i + 1) * 20 - 0.5) s.classList.add('lit'); });
+
+                if (shown >= 100 || elapsed > MAX_LOADER_MS) {
+                    if (barFill) barFill.style.width = '100%';
+                    if (percentEl) percentEl.textContent = '100%';
+                    stars.forEach(s => s.classList.add('lit'));
+                    setTimeout(revealPage, reduceMotion ? 0 : 250);
+                    return;
+                }
+                requestAnimationFrame(tickLoader);
+            }
+            if (gtaPageLoader) {
+                requestAnimationFrame(tickLoader);
+                gtaPageLoader.addEventListener('click', revealPage);
+                // Respaldo de seguridad para que NUNCA se quede pegada
+                setTimeout(revealPage, MAX_LOADER_MS + 800);
+            } else {
+                revealPage();
+            }
+
+            // Toggle del HUD Lateral de Historial de Compras (en celular inicia minimizado para no tapar el Hero)
             const hudWidget = document.getElementById('hudHistoryWidget');
             const hudToggle = document.getElementById('hudHistoryToggle');
             const hudToggleIcon = document.getElementById('hudToggleIcon');
             if (hudWidget && hudToggle) {
+                if (window.innerWidth <= 768) {
+                    hudWidget.classList.add('minimized');
+                    if (hudToggleIcon) hudToggleIcon.innerHTML = '<i class="bi bi-chevron-down"></i>';
+                }
                 hudToggle.addEventListener('click', function() {
                     hudWidget.classList.toggle('minimized');
                     if (hudToggleIcon) {
@@ -2459,32 +2714,41 @@
                 });
             }
 
-            // Efecto parallax suavizado para el hero
+            // Efecto parallax del hero, sincronizado con el refresco de pantalla
+            // (usa la propiedad `translate` para no pisar el zoom de entrada)
             const heroBg = document.getElementById('hero-bg');
-            window.addEventListener('scroll', function() {
-                const scrollOffset = window.pageYOffset;
-                if (heroBg) {
-                    heroBg.style.transform = `translateY(${scrollOffset * 0.3}px) scale(1.02)`;
-                }
-            });
-
-            // Aparición fluida de elementos (reveal)
-            const reveals = document.querySelectorAll(".reveal");
-            function revealOnScroll() {
-                reveals.forEach((element, index) => {
-                    const windowHeight = window.innerHeight;
-                    const elementTop = element.getBoundingClientRect().top;
-                    const elementVisible = 50;
-
-                    if (elementTop < windowHeight - elementVisible) {
-                        setTimeout(() => {
-                            element.classList.add("active");
-                        }, index * 20);
-                    }
-                });
+            let parallaxQueued = false;
+            if (heroBg && !reduceMotion) {
+                window.addEventListener('scroll', function() {
+                    if (parallaxQueued) return;
+                    parallaxQueued = true;
+                    requestAnimationFrame(() => {
+                        const y = Math.min(window.pageYOffset, window.innerHeight);
+                        heroBg.style.translate = `0 ${(y * 0.3).toFixed(1)}px`;
+                        parallaxQueued = false;
+                    });
+                }, { passive: true });
             }
-            window.addEventListener("scroll", revealOnScroll);
-            revealOnScroll();
+
+            // Aparición fluida de secciones: escalonada entre elementos que
+            // entran a la vista al mismo tiempo (p. ej. la fila de tarjetas)
+            function startRevealObserver() {
+                const reveals = document.querySelectorAll('.reveal');
+                if (!('IntersectionObserver' in window) || reduceMotion) {
+                    reveals.forEach(el => el.classList.add('active'));
+                    return;
+                }
+                const observer = new IntersectionObserver((entries) => {
+                    const entering = entries.filter(e => e.isIntersecting)
+                        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left);
+                    entering.forEach((entry, i) => {
+                        entry.target.style.setProperty('--reveal-delay', (i * 90) + 'ms');
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    });
+                }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+                reveals.forEach(el => observer.observe(el));
+            }
 
             // Contador de Ofertas Flash con Cuenta Regresiva
             let totalFlashSeconds = 3 * 3600 + 42 * 60 + 15;

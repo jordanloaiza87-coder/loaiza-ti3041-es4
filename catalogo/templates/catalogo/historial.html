@@ -1,4 +1,4 @@
-{% load static %}
+{% load static formato %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -706,7 +706,7 @@
                             </a>
                             <div class="text-end">
                                 <span class="text-white-50 small me-2 text-uppercase fw-bold" style="font-size: 0.72rem;">Total Pagado:</span>
-                                <span class="order-total-value">${{ compra.total }}</span>
+                                <span class="order-total-value">{{ compra.total|clp }}</span>
                             </div>
                         </div>
                     </div>
@@ -739,7 +739,7 @@
                                         {% if det.categoria_producto %}
                                             <span class="text-info me-2">{{ det.categoria_producto }}</span> •
                                         {% endif %}
-                                        Precio unitario: ${{ det.precio_unitario }}
+                                        Precio unitario: {{ det.precio_unitario|clp }}
                                     </div>
                                 </div>
                             </div>
@@ -750,7 +750,7 @@
                                 </span>
                                 <div class="text-end">
                                     <div class="text-white-50" style="font-size: 0.68rem; text-transform: uppercase;">Subtotal</div>
-                                    <div class="fw-bold fs-5" style="color: var(--gta-orange);">${{ det.subtotal }}</div>
+                                    <div class="fw-bold fs-5" style="color: var(--gta-orange);">{{ det.subtotal|clp }}</div>
                                 </div>
                             </div>
                         </div>

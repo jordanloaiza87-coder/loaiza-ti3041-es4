@@ -1,10 +1,10 @@
 {% extends 'catalogo/base.html' %}
-{% load static %}
+{% load static formato %}
 
 {% block title %}Consultas y Contacto — Ferretería VI{% endblock %}
 
 {% block content %}
-<div class="container py-4" style="margin-top: 75px;">
+<div class="container py-2 py-md-3">
 
     <!-- Encabezado con Estilo GTA VI -->
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pb-3 border-bottom border-white border-opacity-10">
@@ -224,7 +224,7 @@
                                         <a href="{% url 'detalle_producto' prod.id %}" class="text-decoration-none text-white fw-bold small text-truncate d-block">
                                             {{ prod.nombre }}
                                         </a>
-                                        <span class="text-white-50" style="font-size: 0.72rem;">${{ prod.precio }} · Stock: {{ prod.stock }}</span>
+                                        <span class="text-white-50" style="font-size: 0.72rem;">{{ prod.precio|clp }} · Stock: {{ prod.stock }}</span>
                                     </div>
                                 </div>
                                 <a href="{% url 'contacto_cliente' %}?producto={{ prod.id }}" class="btn btn-sm btn-outline-info rounded-pill px-2 py-0 text-nowrap" style="font-size: 0.72rem;" title="Consultar por este producto">

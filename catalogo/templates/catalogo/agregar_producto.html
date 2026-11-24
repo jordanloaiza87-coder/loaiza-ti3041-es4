@@ -389,14 +389,14 @@
 
         @media (max-width: 768px) {
             .form-wrapper {
-                padding: 90px 12px 40px;
+                padding: 118px 10px 40px !important;
             }
             .card-gta-form {
-                padding: 26px 18px;
-                border-radius: 20px;
+                padding: 22px 14px !important;
+                border-radius: 18px !important;
             }
             .form-title {
-                font-size: 1.55rem;
+                font-size: 1.45rem !important;
             }
             .nav-logo-gta {
                 height: 34px;
@@ -406,33 +406,8 @@
 </head>
 <body>
 
-    <!-- Navbar GTA VI -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-gta fixed-top">
-        <div class="container py-2">
-            <a class="navbar-brand p-0 m-0 d-flex align-items-center" href="{% url 'inicio' %}" title="Ir al Inicio Principal">
-                <img src="{% static 'images/logo_ferreteria_vi.png' %}" alt="Ferretería VI Logo" class="nav-logo-gta">
-            </a>
-            <div class="d-flex flex-wrap align-items-center gap-2">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'mi_perfil' %}" class="user-badge-gta me-1 text-decoration-none" title="Ir a Mi Perfil">
-                        {% if user.perfil.avatar_url %}
-                            <img src="{{ user.perfil.avatar_url }}" alt="{{ user.username }}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gta-teal);">
-                        {% else %}
-                            <i class="bi bi-person-circle"></i>
-                        {% endif %}
-                        <span class="d-none d-sm-inline">Hola, <strong>{{ user.username }}</strong></span>
-                        {% if user.is_superuser %}
-                            <span class="admin-tag-mini">Admin</span>
-                        {% endif %}
-                    </a>
-                {% endif %}
-                <a href="{% url 'buscar_productos' %}" class="btn-nav-cart">
-                    <i class="bi bi-grid-fill"></i>
-                    <span>Catálogo</span>
-                </a>
-            </div>
-        </div>
-    </nav>
+    <!-- Navbar Oficial Compartida GTA VI -->
+    {% include 'catalogo/includes/navbar.html' %}
 
     <!-- Contenedor Principal -->
     <div class="form-wrapper">

@@ -1,0 +1,240 @@
+{
+  "info": {
+    "name": "Ferretería VI - API REST Catálogo con JWT (ES4 - TI3041)",
+    "_postman_id": "e4a1f43e-f1ff-4585-88e3-f2704af1320e",
+    "description": "Colección de pruebas REST y JWT para la Evaluación Sumativa 4 (ES4) de Programación Back End (TI3041).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. GET Listado Completo de Productos (Público - 200 OK)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/productos/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", ""]
+        }
+      }
+    },
+    {
+      "name": "2. GET Detalle Producto Existente ID 1 (Público - 200 OK)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/productos/1/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", "1", ""]
+        }
+      }
+    },
+    {
+      "name": "3. GET Detalle Producto Inexistente ID 9999 (Público - 404 Not Found)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/productos/9999/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", "9999", ""]
+        }
+      }
+    },
+    {
+      "name": "4. POST Crear Producto SIN Token (Protegido - 401 Unauthorized)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Sierra Sable Sin Token\",\n  \"categoria\": \"Eléctricas\",\n  \"precio\": 42000,\n  \"stock\": 10\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/productos/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", ""]
+        }
+      }
+    },
+    {
+      "name": "5. POST Obtener Token JWT Superusuario (200 OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"jordanAdmin\",\n  \"password\": \"admin1234\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/token/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "token", ""]
+        }
+      }
+    },
+    {
+      "name": "6. POST Refrescar Token JWT (200 OK)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/token/refresh/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "token", "refresh", ""]
+        }
+      }
+    },
+    {
+      "name": "7. POST Crear Producto Válido CON Token JWT (201 Created)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Taladro Inalambrico 20V\",\n  \"categoria\": \"Eléctricas\",\n  \"precio\": 54990,\n  \"stock\": 15\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/productos/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", ""]
+        }
+      }
+    },
+    {
+      "name": "8. POST Crear Producto Inválido CON Token JWT (400 Bad Request)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"\",\n  \"categoria\": \"Eléctricas\",\n  \"precio\": -500,\n  \"stock\": -2\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/productos/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", ""]
+        }
+      }
+    },
+    {
+      "name": "9. PUT Actualizar Producto CON Token JWT (200 OK)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Taladro Inalambrico 20V Pro\",\n  \"categoria\": \"Eléctricas\",\n  \"precio\": 59990,\n  \"stock\": 20\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/productos/42/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", "42", ""]
+        }
+      }
+    },
+    {
+      "name": "10. PATCH Actualizar Stock Parcial CON Token JWT (200 OK)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stock\": 35\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/productos/42/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", "42", ""]
+        }
+      }
+    },
+    {
+      "name": "11. DELETE Eliminar Producto CON Token JWT (204 No Content)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/productos/42/",
+          "host": ["{{base_url}}"],
+          "path": ["api", "productos", "42", ""]
+        }
+      }
+    }
+  ]
+}

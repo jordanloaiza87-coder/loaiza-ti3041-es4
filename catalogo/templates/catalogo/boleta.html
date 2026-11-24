@@ -1,5 +1,5 @@
 {% extends 'catalogo/base.html' %}
-{% load static %}
+{% load static formato %}
 
 {% block title %}Boleta Electrónica #000{{ compra.id }} - Ferreterías VI{% endblock %}
 
@@ -465,8 +465,8 @@
                         <td class="fw-bold">{{ item.nombre_producto }}</td>
                         <td><span class="badge bg-dark border border-secondary">{{ item.categoria_producto|default:"General" }}</span></td>
                         <td class="text-center fw-bold">{{ item.cantidad }}</td>
-                        <td class="text-end">${{ item.precio_unitario }}</td>
-                        <td class="text-end fw-bold text-warning">${{ item.subtotal }}</td>
+                        <td class="text-end">{{ item.precio_unitario|clp }}</td>
+                        <td class="text-end fw-bold text-warning">{{ item.subtotal|clp }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -495,24 +495,24 @@
                     {% if compra.descuento > 0 %}
                     <div class="d-flex justify-content-between small mb-1 text-white-50">
                         <span>Subtotal Productos:</span>
-                        <span>${{ compra.subtotal_sin_descuento }}</span>
+                        <span>{{ compra.subtotal_sin_descuento|clp }}</span>
                     </div>
                     <div class="d-flex justify-content-between small mb-2 text-info fw-bold">
                         <span>Descuento Cupón ({{ compra.cupon_codigo }}):</span>
-                        <span>-${{ compra.descuento }}</span>
+                        <span>-{{ compra.descuento|clp }}</span>
                     </div>
                     {% endif %}
                     <div class="d-flex justify-content-between small mb-1 text-white-50">
                         <span>Monto Neto:</span>
-                        <span>${{ compra.monto_neto }}</span>
+                        <span>{{ compra.monto_neto|clp }}</span>
                     </div>
                     <div class="d-flex justify-content-between small mb-2 text-white-50">
                         <span>I.V.A. (19%):</span>
-                        <span>${{ compra.monto_iva }}</span>
+                        <span>{{ compra.monto_iva|clp }}</span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center pt-2 border-top border-white border-opacity-10">
                         <span class="fw-bold text-uppercase">Total Pagado:</span>
-                        <span class="fs-4 fw-black text-warning" style="font-weight: 900;">${{ compra.total }}</span>
+                        <span class="fs-4 fw-black text-warning" style="font-weight: 900;">{{ compra.total|clp }}</span>
                     </div>
                 </div>
             </div>
