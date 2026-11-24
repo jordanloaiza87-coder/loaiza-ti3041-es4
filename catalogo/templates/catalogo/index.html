@@ -211,31 +211,36 @@
         }
 
         .loader-logo-title {
-            font-size: 3.2rem;
+            font-size: clamp(1.85rem, 8vw, 3.2rem);
             font-weight: 950;
             font-style: italic;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: clamp(1.5px, 0.8vw, 4px);
+            text-align: center;
+            white-space: nowrap;
+            padding: 0 14px;
             background: linear-gradient(to bottom, #ffffff 15%, var(--gta-pink) 60%, var(--gta-orange) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 25px rgba(241, 82, 164, 0.55));
             z-index: 5;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .loader-subtitle {
             color: var(--gta-teal);
-            font-size: 0.85rem;
+            font-size: clamp(0.65rem, 2.6vw, 0.85rem);
             font-weight: 800;
-            letter-spacing: 5px;
+            letter-spacing: clamp(1.8px, 0.8vw, 5px);
             text-transform: uppercase;
+            text-align: center;
+            padding: 0 16px;
             margin-bottom: 22px;
             z-index: 5;
         }
 
         .loader-bar-box {
-            width: 280px;
+            width: min(280px, 78vw);
             height: 7px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
@@ -1998,31 +2003,70 @@
         }
 
         @media (max-width: 768px) {
-            .hero-title { font-size: 2.6rem; letter-spacing: 2px; }
-            .hero-subtitle { font-size: 0.85rem; letter-spacing: 3px; }
+            .hero-banner-section {
+                height: 62vh !important;
+                min-height: 410px !important;
+                padding-top: 98px !important;
+            }
+            .hero-content {
+                padding: 0 12px 60px 12px !important;
+            }
+            .hero-title {
+                font-size: clamp(1.9rem, 8.2vw, 2.7rem) !important;
+                letter-spacing: 1.5px !important;
+                line-height: 1.1 !important;
+                margin-bottom: 6px !important;
+            }
+            .hero-subtitle {
+                font-size: clamp(0.68rem, 2.8vw, 0.85rem) !important;
+                letter-spacing: 2px !important;
+                line-height: 1.35 !important;
+                padding: 0 8px !important;
+            }
+            .ml-cards-overlap-section {
+                margin-top: -38px !important;
+                margin-bottom: 40px !important;
+            }
             .apple-filter-container { justify-content: flex-start; }
-            .hero-banner-section { height: 68vh; min-height: 420px; }
             .hud-history-widget {
-                top: 76px;
-                right: 10px;
-                left: 10px;
-                width: auto;
-                max-width: calc(100vw - 20px);
+                top: 102px !important;
+                right: 10px !important;
+                left: auto !important;
+                width: 245px !important;
+                max-width: calc(100vw - 20px) !important;
+            }
+            .hud-history-widget.minimized {
+                width: 175px !important;
             }
             .nav-logo-gta {
                 height: 34px;
             }
             .navbar-top-row {
-                gap: 8px;
+                flex-wrap: wrap !important;
+                gap: 6px !important;
             }
+            .nav-search-wrapper,
             .ml-search-form {
-                order: 3;
-                flex: 1 1 100%;
-                max-width: 100%;
-                margin-top: 4px;
+                order: 3 !important;
+                flex: 1 1 100% !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-top: 4px !important;
             }
             .main-video-showcase-card {
-                border-radius: 18px;
+                border-radius: 16px !important;
+                padding: 16px 14px !important;
+                margin-bottom: 16px !important;
+            }
+            .flash-sale-banner {
+                padding: 14px !important;
+                gap: 12px !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            .flash-sale-banner > div:last-child {
+                justify-content: space-between !important;
+                width: 100% !important;
             }
             .cart-toast-gta {
                 left: 12px;
@@ -2033,10 +2077,12 @@
         }
 
         @media (max-width: 576px) {
-            .hero-title { font-size: 2.1rem; }
-            .hero-subtitle { font-size: 0.75rem; letter-spacing: 2px; }
+            .wanted-star { font-size: 1.35rem !important; }
             .user-badge-gta { padding: 4px 10px 4px 6px; font-size: 0.75rem; }
-            .btn-hamburger-gta { padding: 6px 10px; font-size: 0.78rem; }
+            .btn-hamburger-gta { padding: 5px 9px; font-size: 0.75rem; }
+            .ml-feature-card { padding: 14px 12px !important; }
+            .ml-card-visual { width: 56px !important; height: 56px !important; font-size: 1.5rem !important; }
+            .section-title-gta { font-size: 1.5rem !important; }
         }
     </style>
 </head>
@@ -2202,7 +2248,7 @@
         </div>
 
         <!-- Fila de 5 Casillas de Acceso Rápido (Estilo Mercado Libre, limpias y sin emojis) -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-3">
+        <div class="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-2 g-sm-3">
 
             <!-- Casilla 1: Más vendidos -->
             <div class="col reveal">
@@ -2444,11 +2490,15 @@
                 });
             }
 
-            // Toggle del HUD Lateral de Historial de Compras
+            // Toggle del HUD Lateral de Historial de Compras (en celular inicia minimizado para no tapar el Hero)
             const hudWidget = document.getElementById('hudHistoryWidget');
             const hudToggle = document.getElementById('hudHistoryToggle');
             const hudToggleIcon = document.getElementById('hudToggleIcon');
             if (hudWidget && hudToggle) {
+                if (window.innerWidth <= 768) {
+                    hudWidget.classList.add('minimized');
+                    if (hudToggleIcon) hudToggleIcon.innerHTML = '<i class="bi bi-chevron-down"></i>';
+                }
                 hudToggle.addEventListener('click', function() {
                     hudWidget.classList.toggle('minimized');
                     if (hudToggleIcon) {

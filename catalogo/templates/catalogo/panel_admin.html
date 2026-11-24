@@ -40,17 +40,62 @@
         margin-bottom: 8px;
         flex-wrap: wrap;
     }
+
+    @media (max-width: 768px) {
+        .admin-page-title {
+            font-size: 1.4rem !important;
+        }
+        .admin-top-actions {
+            width: 100%;
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px !important;
+        }
+        .admin-top-actions a:first-child {
+            grid-column: span 2;
+        }
+        .kpi-card-gta {
+            padding: 12px 14px !important;
+            border-radius: 14px !important;
+        }
+        .kpi-value {
+            font-size: 1.35rem !important;
+            word-break: break-word;
+        }
+        .panel-section-card {
+            padding: 14px 12px !important;
+            border-radius: 16px !important;
+        }
+        .stock-low-row {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 10px 12px;
+            gap: 8px;
+        }
+        .stock-low-row > div:last-child {
+            justify-content: space-between;
+            width: 100%;
+        }
+        .dispatch-cta-banner {
+            padding: 16px 14px !important;
+        }
+        .dispatch-cta-btn {
+            width: 100%;
+            text-align: center;
+            justify-content: center;
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 mb-md-4">
         <div>
-            <h1 class="fw-black m-0" style="font-weight: 900; font-size: 2rem;">📊 Panel Ejecutivo Vice City</h1>
+            <h1 class="fw-black m-0 admin-page-title" style="font-weight: 900; font-size: 2rem;">📊 Panel Ejecutivo Vice City</h1>
             <div class="text-white-50 small">Estadísticas de Ventas, Control de Stock Bajo y Boletas Emitidas</div>
         </div>
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap gap-2 admin-top-actions">
             <a href="{% url 'gestion_despachos' %}" class="btn btn-warning rounded-pill px-3 fw-bold btn-sm text-dark">
                 <i class="bi bi-truck me-1"></i> Gestión de Despachos
             </a>
@@ -174,21 +219,21 @@
 
         <!-- Acceso Directo al Módulo Independiente de Despachos -->
         <div class="col-12 mt-2">
-            <div class="p-4 rounded-4" style="background: linear-gradient(135deg, rgba(30, 16, 48, 0.95) 0%, rgba(12, 10, 22, 0.98) 100%); border: 1.5px solid rgba(73, 196, 196, 0.45); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);">
+            <div class="p-4 rounded-4 dispatch-cta-banner" style="background: linear-gradient(135deg, rgba(30, 16, 48, 0.95) 0%, rgba(12, 10, 22, 0.98) 100%); border: 1.5px solid rgba(73, 196, 196, 0.45); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);">
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="fs-1 text-warning p-3 rounded-4" style="background: rgba(245, 132, 38, 0.15); border: 1px solid rgba(245, 132, 38, 0.35);">
+                        <div class="fs-2 text-warning p-2 p-md-3 rounded-4 flex-shrink-0" style="background: rgba(245, 132, 38, 0.15); border: 1px solid rgba(245, 132, 38, 0.35);">
                             🚚
                         </div>
                         <div>
                             <span class="badge bg-warning text-dark fw-bold px-2 py-1 mb-1" style="font-size: 0.68rem;">MÓDULO DEDICADO</span>
-                            <h4 class="fw-bold text-white mb-1">Centro de Gestión de Despachos y Envíos</h4>
+                            <h5 class="fw-bold text-white mb-1">Centro de Gestión de Despachos y Envíos</h5>
                             <p class="text-white-50 small mb-0">
                                 Página independiente para supervisar despachos a domicilio, retiros en tienda y actualización de estados sin recargar.
                             </p>
                         </div>
                     </div>
-                    <a href="{% url 'gestion_despachos' %}" class="btn btn-warning rounded-pill px-4 py-2 fw-black text-dark text-uppercase" style="letter-spacing: 0.5px; font-weight: 800;">
+                    <a href="{% url 'gestion_despachos' %}" class="btn btn-warning rounded-pill px-4 py-2 fw-black text-dark text-uppercase dispatch-cta-btn" style="letter-spacing: 0.5px; font-weight: 800;">
                         <i class="bi bi-box-arrow-up-right me-2"></i> Abrir Gestión de Despachos
                     </a>
                 </div>

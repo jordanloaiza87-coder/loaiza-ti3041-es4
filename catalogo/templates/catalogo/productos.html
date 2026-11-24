@@ -998,19 +998,48 @@
 
         @media (max-width: 768px) {
             .results-wrapper {
-                padding-top: 120px;
+                padding-top: 118px !important;
+            }
+            .related-searches-bar {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding: 8px 0;
+                margin-bottom: 12px !important;
+            }
+            .sidebar-filter-card {
+                padding: 14px !important;
+                margin-bottom: 14px !important;
+            }
+            .filter-list-gta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .filter-list-gta li {
+                margin-bottom: 0 !important;
+            }
+            .filter-link-gta {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 50px;
+                padding: 4px 10px !important;
+                font-size: 0.75rem !important;
+                gap: 6px;
             }
             .nav-logo-gta {
                 height: 34px;
             }
             .navbar-top-row {
-                gap: 8px;
+                flex-wrap: wrap !important;
+                gap: 6px !important;
             }
+            .nav-search-wrapper,
             .ml-search-form {
-                order: 3;
-                flex: 1 1 100%;
-                max-width: 100%;
-                margin-top: 4px;
+                order: 3 !important;
+                flex: 1 1 100% !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-top: 4px !important;
             }
             .store-promo-banner {
                 flex-direction: column;
@@ -1033,8 +1062,44 @@
 
         @media (max-width: 576px) {
             .user-badge-gta { padding: 4px 10px 4px 6px; font-size: 0.75rem; }
-            .btn-hamburger-gta { padding: 6px 10px; font-size: 0.78rem; }
-            .sidebar-search-title { font-size: 1.35rem; }
+            .btn-hamburger-gta { padding: 5px 9px; font-size: 0.75rem; }
+            .sidebar-search-title { font-size: 1.15rem !important; margin-bottom: 0 !important; }
+            .product-img-wrapper { height: 138px !important; padding: 10px !important; }
+            .product-img { height: 105px !important; }
+            .card-gta { border-radius: 14px !important; }
+            .card-gta .card-body { padding: 10px !important; }
+            .card-gta h6 { font-size: 0.82rem !important; line-height: 1.25 !important; }
+            .price-tag { font-size: 1.2rem !important; }
+            .badge-categoria { font-size: 0.58rem !important; padding: 3px 6px !important; }
+            .stock-pill { font-size: 0.62rem !important; padding: 2px 6px !important; }
+            .add-to-cart-form input[type="number"] { width: 42px !important; padding: 2px 4px !important; font-size: 0.78rem !important; }
+            .add-to-cart-form .btn-gta-primary { padding: 5px 8px !important; font-size: 0.72rem !important; }
+        }
+        .mobile-cat-chips-bar {
+            display: flex;
+            overflow-x: auto;
+            gap: 6px;
+            padding: 4px 0 8px 0;
+            scrollbar-width: none;
+        }
+        .mobile-cat-chips-bar::-webkit-scrollbar { display: none; }
+        .mobile-cat-chip {
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(241, 82, 164, 0.35);
+            color: #e2e8f0;
+            border-radius: 50px;
+            padding: 5px 12px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .mobile-cat-chip.active {
+            background: linear-gradient(135deg, var(--gta-pink), var(--gta-orange));
+            border-color: transparent;
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(241, 82, 164, 0.45);
         }
     </style>
 </head>
@@ -1045,8 +1110,8 @@
 
     <!-- Contenedor Principal de Resultados (Inspirado en la 2da Imagen de Referencia) -->
     <div class="results-wrapper">
-        <!-- Barra de Búsquedas Relacionadas -->
-        <div class="related-searches-bar mb-4">
+        <!-- Barra de Búsquedas Relacionadas (Solo escritorio para no ocupar alto en celular) -->
+        <div class="related-searches-bar mb-4 d-none d-lg-block">
             <div class="container">
                 <strong class="text-white me-2">Búsquedas relacionadas:</strong>
                 <a href="{% url 'buscar_productos' %}?q=taladro">taladro percutor</a>
@@ -1066,22 +1131,42 @@
         </div>
 
         <div class="container">
-            <div class="row g-4">
+            <div class="row g-2 g-lg-4">
                 
                 <!-- ========================================================= -->
                 <!-- COLUMNA IZQUIERDA: SIDEBAR DE FILTROS Y CATEGORÍAS         -->
                 <!-- ========================================================= -->
                 <div class="col-12 col-lg-3">
-                    <div class="sidebar-breadcrumb">
+                    <div class="sidebar-breadcrumb d-none d-lg-block">
                         <a href="{% url 'buscar_productos' %}" class="text-white-50 text-decoration-none">Catálogo</a>
                         {% if categoria_actual %} &rsaquo; {{ categoria_actual }}{% else %} &rsaquo; Todos los Productos{% endif %}
                     </div>
 
-                    <h1 class="sidebar-search-title">{{ titulo_busqueda }}</h1>
-                    <div class="sidebar-results-count">+{{ total_resultados }} resultados encontrados</div>
+                    <!-- Encabezado compacto en celular con botón desplegable de filtros -->
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <div>
+                            <h1 class="sidebar-search-title">{{ titulo_busqueda }}</h1>
+                            <div class="sidebar-results-count mb-1 mb-lg-3">+{{ total_resultados }} resultados encontrados</div>
+                        </div>
+                        <button class="btn btn-sm d-lg-none fw-bold rounded-pill px-3 py-1 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#mobileFiltersCollapse" aria-expanded="false" style="background: rgba(241, 82, 164, 0.22); border: 1px solid rgba(241, 82, 164, 0.55); font-size: 0.76rem;">
+                            <i class="bi bi-sliders me-1 text-info"></i> Filtros
+                        </button>
+                    </div>
+
+                    <!-- Barra horizontal deslizable de categorías en 1 sola línea (Solo Celular) -->
+                    <div class="mobile-cat-chips-bar d-flex d-lg-none mb-1">
+                        <a href="{% url 'buscar_productos' %}{% if search_query %}?q={{ search_query|urlencode }}{% endif %}" class="mobile-cat-chip {% if not categoria_actual %}active{% endif %}">
+                            Todas ({{ total_catalogo }})
+                        </a>
+                        {% for cat in categorias_sidebar %}
+                            <a href="{% url 'buscar_productos' %}?categoria={{ cat.nombre|urlencode }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}" class="mobile-cat-chip {% if categoria_actual|lower == cat.nombre|lower %}active{% endif %}">
+                                {{ cat.nombre }} ({{ cat.total }})
+                            </a>
+                        {% endfor %}
+                    </div>
 
                     <!-- Chips de filtros activos con X para quitar -->
-                    <div class="mb-3">
+                    <div class="mb-2">
                         {% if search_query %}
                             <a href="{% url 'buscar_productos' %}{% if categoria_actual %}?categoria={{ categoria_actual|urlencode }}{% endif %}" class="active-filter-tag">
                                 "{{ search_query }}" <i class="bi bi-x-lg"></i>
@@ -1109,6 +1194,8 @@
                         {% endif %}
                     </div>
 
+                    <!-- Panel de Filtros Avanzados: siempre abierto en PC (d-lg-block), colapsado en celular -->
+                    <div class="collapse d-lg-block" id="mobileFiltersCollapse">
                     <!-- Tarjetas Switch (Igual que en la 2da Imagen de Mercado Libre) -->
                     <a href="{% url 'buscar_productos' %}?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if categoria_actual %}categoria={{ categoria_actual|urlencode }}&{% endif %}{% if not disponibles_activo %}disponibles=1{% endif %}"
                        class="filter-switch-card {% if disponibles_activo %}active-switch{% endif %}">
@@ -1181,6 +1268,7 @@
                         </li>
                         {% endfor %}
                     </ul>
+                    </div>
                 </div>
 
                 <!-- ========================================================= -->
@@ -1188,8 +1276,8 @@
                 <!-- ========================================================= -->
                 <div class="col-12 col-lg-9">
 
-                    <!-- Banner de Ofertas Flash con Cuenta Regresiva -->
-                    <div class="flash-sale-banner">
+                    <!-- Banner de Ofertas Flash con Cuenta Regresiva (Oculto en celular para ver productos directo) -->
+                    <div class="flash-sale-banner d-none d-md-flex">
                         <div class="d-flex align-items-center gap-3">
                             <div class="fs-1 text-warning" style="filter: drop-shadow(0 0 10px rgba(245, 132, 38, 0.8));">⚡</div>
                             <div>
@@ -1217,14 +1305,14 @@
                     </div>
 
                     <!-- Barra de Ordenamiento Superior Derecha -->
-                    <div class="sort-bar-row">
-                        <div class="text-white-50 small">
+                    <div class="sort-bar-row py-2 px-3 mb-2 mb-lg-3">
+                        <div class="text-white-50 small d-none d-sm-block">
                             Mostrando <strong>{{ total_resultados }}</strong> productos
                             {% if categoria_actual %} en <strong class="text-warning">{{ categoria_actual }}</strong>{% endif %}
                             {% if search_query %} para <strong class="text-info">"{{ search_query }}"</strong>{% endif %}
                         </div>
 
-                        <form action="{% url 'buscar_productos' %}" method="get" class="d-flex align-items-center gap-2 m-0">
+                        <form action="{% url 'buscar_productos' %}" method="get" class="d-flex align-items-center justify-content-between w-100 w-sm-auto gap-2 m-0">
                             {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
                             {% if categoria_actual %}<input type="hidden" name="categoria" value="{{ categoria_actual }}">{% endif %}
                             {% if disponibles_activo %}<input type="hidden" name="disponibles" value="1">{% endif %}
@@ -1241,9 +1329,9 @@
                         </form>
                     </div>
 
-                    <!-- Grid de Tarjetas de Productos -->
+                    <!-- Grid de Tarjetas de Productos (2 columnas en celular, 3 en PC) -->
                     {% if productos %}
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-4">
+                    <div class="row row-cols-2 row-cols-sm-2 row-cols-xl-3 g-2 g-sm-4">
                         {% for p in productos %}
                         <div class="col">
                             <div class="card card-gta h-100 position-relative">

@@ -132,12 +132,6 @@
         }
     }
 
-    @media (max-width: 540px) {
-        .nav-cat-select {
-            display: none !important;
-        }
-    }
-
     .nav-cat-select option {
         background: #140e20;
         color: #ffffff;
@@ -498,27 +492,147 @@
         background: rgba(241, 82, 164, 0.2);
     }
 
-    @media (max-width: 576px) {
+    /* ===== OPTIMIZACIÓN COMPLETA PARA CELULAR (MOBILE FIRST GTA VI) ===== */
+    @media (max-width: 768px) {
+        .navbar-gta {
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+        }
+        .navbar-gta .container {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
         .navbar-top-row {
-            gap: 6px;
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+            justify-content: space-between !important;
         }
-        .nav-logo-gta {
-            height: 36px;
-            max-height: 36px;
+        .navbar-brand {
+            order: 1 !important;
         }
-        .btn-hamburger-gta {
-            padding: 5px 8px;
-            font-size: 0.72rem;
+        .navbar-top-row > .d-flex {
+            order: 2 !important;
+            gap: 6px !important;
         }
-        .btn-hamburger-gta .hamburger-lines-icon {
-            font-size: 1.25rem;
+        .nav-search-wrapper {
+            order: 3 !important;
+            flex: 1 1 100% !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 4px 0 2px 0 !important;
         }
         .search-input-group {
-            padding: 4px 8px;
-            gap: 4px;
+            padding: 6px 10px !important;
+            gap: 6px !important;
+            border-radius: 10px !important;
         }
         .search-input-gta {
-            font-size: 0.8rem;
+            font-size: 0.85rem !important;
+        }
+        .nav-cat-select {
+            display: inline-block !important;
+            max-width: 108px !important;
+            font-size: 0.72rem !important;
+            padding: 3px 6px !important;
+        }
+        .gta-collapse-panel {
+            padding: 12px 14px !important;
+            max-height: 74vh !important;
+            overflow-y: auto !important;
+            border-radius: 14px !important;
+        }
+        .gta-menu-actions-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 8px !important;
+        }
+        .gta-menu-item-btn {
+            padding: 9px 11px !important;
+            font-size: 0.78rem !important;
+        }
+        .main-page-wrapper,
+        .cart-wrapper,
+        .history-wrapper,
+        .profile-wrapper,
+        .results-wrapper {
+            padding-top: 112px !important;
+        }
+        .gta-messages-toast-container {
+            top: 108px !important;
+            width: 94% !important;
+        }
+        /* Ajustes globales de tarjetas y páginas en celular */
+        .page-header-title {
+            font-size: 1.5rem !important;
+        }
+        .card-cart,
+        .order-card,
+        .detail-card-gta,
+        .invoice-card,
+        .card-profile-gta {
+            padding: 16px 14px !important;
+            border-radius: 16px !important;
+        }
+        .cart-item {
+            padding: 12px 10px !important;
+        }
+        .payment-methods-grid {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+        }
+        .invoice-meta-grid {
+            grid-template-columns: 1fr 1fr !important;
+            padding: 12px !important;
+            gap: 10px !important;
+        }
+        .detail-img-showcase {
+            height: 215px !important;
+            padding: 12px !important;
+        }
+        .detail-price-big {
+            font-size: 1.75rem !important;
+        }
+        .fav-card-gta {
+            padding: 12px !important;
+            border-radius: 14px !important;
+        }
+        .fav-img-box {
+            height: 120px !important;
+            padding: 8px !important;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .nav-logo-gta {
+            height: 34px !important;
+            max-height: 34px !important;
+        }
+        .btn-top-cart-gta {
+            padding: 5px 10px !important;
+            font-size: 0.78rem !important;
+        }
+        .user-badge-gta {
+            padding: 5px 10px !important;
+            font-size: 0.78rem !important;
+        }
+        .btn-sound-gta {
+            padding: 5px 8px !important;
+            font-size: 0.82rem !important;
+        }
+        .btn-hamburger-gta {
+            padding: 5px 9px !important;
+            font-size: 0.74rem !important;
+        }
+        .btn-hamburger-gta .hamburger-lines-icon {
+            font-size: 1.2rem !important;
+        }
+        .total-amount-box {
+            font-size: 1.75rem !important;
+        }
+        .btn-confirm-order,
+        .btn-confirm-order-blue {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            font-size: 0.88rem !important;
         }
     }
 </style>
